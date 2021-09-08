@@ -32,5 +32,6 @@ def subdir(pwd, p, h):
     string = str(pwd) + '/' + h + '/' + p
     os.chdir(string)
     print(string)
+    return string
 
 # Actuall function start here
