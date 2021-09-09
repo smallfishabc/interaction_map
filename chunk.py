@@ -1,7 +1,7 @@
 import numpy as np
 
 
-class Chunk:
+class Chunk():
     def __init__(self, residue, distance, name, chunk_size, contactmap, pairs):
         self.name = name
         self.residue = residue
@@ -13,8 +13,6 @@ class Chunk:
         self.left_residue_list = self.generate_residue_list('left')
         self.right_residue_list = self.generate_residue_list('right')
         self.pair_list = self.pair_list()
-        self.interact_list = self.calc_interact(contactmap, pairs)
-        self.interact = self.sum_interact()
 
     def search_pairs(self):
         return [self.residue, self.residue + self.distance]
@@ -49,9 +47,30 @@ class Chunk:
             interaction_value = contactmap[indexpairs]
             print(interaction_value)
             interaction_list.append(interaction_value)
-        return interaction_list
-
+        self.interact_list = interaction_list
 
     def sum_interact(self):
-        average = np.log(np.average(self.interact_list))
-        return average
+        average = np.average(self.interact_list)
+        self.interact = average
+
+
+def mapping_chunk(name, distance, contact_map, pairs, chunk_size=5):
+    location=[]
+    object=[]
+    value=[]
+    start = pairs[0][0]
+    end = pairs[-1][-1]
+    i = start
+    while i < end:
+        for index, element in enumerate(pairs):
+            test = Chunk(element[0], distance, name + str(element[0]), chunk_size, contact_map, pairs)
+            if test.left_residue_list[0] >= start and test.right_residue_list[-1] <= end:
+                chunk = test
+                chunk.calc_interact(contact_map,pairs)
+                chunk.sum_interact()
+                object.append(chunk)
+                value.append(chunk.interact)
+                location.append(chunk.residue)
+            i+=1
+    simple=dict(zip(location,value))
+    return simple

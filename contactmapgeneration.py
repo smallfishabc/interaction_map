@@ -100,7 +100,7 @@ def loadtraj(repeats, pdbtype='__START_0.pdb', stdoutput=0, traj_selection=0, sw
     return r, jframe
 
 
-def generate_contactmap(protein_name, repeats=5, cutoff=0.8, workpath=0):
+def generate_contactmap(protein_name, repeats=5, cutoff=0.8, workpath=0,readfromfile=0):
     traj, frames = loadtraj(repeats)
-    contact = Contactmap(protein_name, cutoff, traj)
+    contact = Contactmap(protein_name, cutoff, traj,readfromfile=readfromfile)
     return contact
