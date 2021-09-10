@@ -42,16 +42,17 @@ class Chunk():
         temp_pairs = pairs.tolist()
         for i in self.pair_list:
             indexpairs = temp_pairs.index(i)
-            print(i)
-            print(indexpairs)
+            #print(i)
+            #print(indexpairs)
             interaction_value = contactmap[indexpairs]
-            print(interaction_value)
+            #print(interaction_value)
             interaction_list.append(interaction_value)
         self.interact_list = interaction_list
 
     def sum_interact(self):
         average = np.average(self.interact_list)
         self.interact = average
+        print(average)
 
 
 def mapping_chunk(name, distance, contact_map, pairs, chunk_size=5):
@@ -62,15 +63,16 @@ def mapping_chunk(name, distance, contact_map, pairs, chunk_size=5):
     end = pairs[-1][-1]
     i = start
     while i < end:
-        for index, element in enumerate(pairs):
-            test = Chunk(element[0], distance, name + str(element[0]), chunk_size, contact_map, pairs)
+            test = Chunk(i, distance, name + str(i), chunk_size, contact_map, pairs)
             if test.left_residue_list[0] >= start and test.right_residue_list[-1] <= end:
                 chunk = test
                 chunk.calc_interact(contact_map,pairs)
                 chunk.sum_interact()
                 object.append(chunk)
                 value.append(chunk.interact)
-                location.append(chunk.residue)
+                location.append(chunk.pair)
             i+=1
-    simple=dict(zip(location,value))
-    return simple
+    location=np.array(location)
+    value=np.array(value)
+    #simple=dict(zip(location,value))
+    return location,value
