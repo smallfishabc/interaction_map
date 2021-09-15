@@ -37,7 +37,7 @@ class Contactmap:
     def compute_contact(self):
         index_list = []
         [cont, pairs] = md.compute_contacts(self.traj, contacts='all', scheme='CA', ignore_nonprotein=True)
-        print(self.cutoff)
+        print(self.name)
         for index, i in enumerate(pairs):
             if (i[1] - i[0]) < 3:
                 index_list.append(index)
@@ -67,7 +67,7 @@ class Contactmap:
         np.savetxt(str(self.name) + "pair.csv", a, delimiter=",")
         return
 
-
+# Here, we created a function to simplify the import process of trajectory file under my simulation database structure
 # Normally, we input repeats number into this function to get the full trajectory file of the contact map
 # If switch == 1, we can input single traj file.
 # We can also input a list to traj_selection indicating the index of individual repeats to import part of
@@ -101,6 +101,7 @@ def loadtraj(repeats, pdbtype='__START_0.pdb', stdoutput=0, traj_selection=0, sw
 
 
 def generate_contactmap(protein_name, repeats=5, cutoff=0.8, workpath=0,readfromfile=0):
+#    os.chdir(workpath)
     traj, frames = loadtraj(repeats)
     contact = Contactmap(protein_name, cutoff, traj,readfromfile=readfromfile)
     return contact

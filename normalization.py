@@ -23,7 +23,6 @@ def normalization(targetmap, pairs, a1=1.64, b1=-1.32):
         value = 0
         if i != 0:
             value = np.log(i / adjustment)
-
         else:
             value = 0
         raw_value[index] = value

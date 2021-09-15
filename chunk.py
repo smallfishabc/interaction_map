@@ -1,6 +1,7 @@
 import numpy as np
 
-
+# Here we created a sequence chunk. The sequence chunk is the combination of several consecutive residue.
+# We will compute the average interaction strength across the entire chunk
 class Chunk():
     def __init__(self, residue, distance, name, chunk_size, contactmap, pairs):
         self.name = name
@@ -42,17 +43,14 @@ class Chunk():
         temp_pairs = pairs.tolist()
         for i in self.pair_list:
             indexpairs = temp_pairs.index(i)
-            #print(i)
-            #print(indexpairs)
             interaction_value = contactmap[indexpairs]
-            #print(interaction_value)
             interaction_list.append(interaction_value)
         self.interact_list = interaction_list
 
     def sum_interact(self):
         average = np.average(self.interact_list)
         self.interact = average
-        print(average)
+#        print(average)
 
 
 def mapping_chunk(name, distance, contact_map, pairs, chunk_size=5):
