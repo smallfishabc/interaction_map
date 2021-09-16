@@ -89,14 +89,14 @@ def interaction_plotting(reaction, raw_value, pairs, layout, ax, intertype, stre
             colorset = 'green'
             connect = "arc3,rad=-0.5"
         if inot == 1:
-            colorset = 'aquamarine'
+            colorset = 'deepskyblue'
             connect = "arc3,rad=-0.5"
     elif intertype == 'rep':
         if inot == -2:
             colorset = 'red'
             connect = "arc3,rad=0.5"
         if inot == -1:
-            colorset = 'mistyrose'
+            colorset = 'lightyellow'
             connect = "arc3,rad=0.5"
     # Remove unnecessary pairs
     indexlist = []
@@ -148,3 +148,42 @@ def interaction_map(seq, length, interaction, raw_value, pairs, figname,targetma
     # Save and demonstrate the plot
     #plt.savefig(figname + '.png')
     plt.show()
+
+def interaction_map_chunk(seq, length, interaction, raw_value, pairs,layout, ax ,figname, targetmap):
+    # Plot interaction between each residue
+    interaction_plotting(interaction, raw_value, pairs, layout, ax, 'att', 1,targetmap)
+    interaction_plotting(interaction, raw_value, pairs, layout, ax, 'att', 2,targetmap)
+    interaction_plotting(interaction, raw_value, pairs, layout, ax, 'rep', -1,targetmap)
+    interaction_plotting(interaction, raw_value, pairs, layout, ax, 'rep', -2,targetmap)
+
+def chunk_plot(pairs, layout, ax, intertype, strength):
+    inot = strength
+    if intertype == 'att':
+        if inot == 2:
+            colorset = 'green'
+            connect = "arc3,rad=-0.01"
+        if inot == 1:
+            colorset = 'deepskyblue'
+            connect = "arc3,rad=-0.01"
+    elif intertype == 'rep':
+        if inot == -2:
+            colorset = 'red'
+            connect = "arc3,rad=0.01"
+        if inot == -1:
+            colorset = 'lightyellow'
+            connect = "arc3,rad=0.01"
+    for index, edge in enumerate(pairs):
+        # Adjust location to improve visualization effect
+        a = layout[edge[0]-2][0]
+        b = layout[edge[0]-2][1]+0.2
+        c = layout[edge[1]+2][0]
+        d = layout[edge[1]+2][1]+0.2
+        # Plot Interaction between pairs
+        ax.annotate("",
+                    xy=(a, b),
+                    xytext=(c, d),
+                    arrowprops=dict(arrowstyle="-", color=colorset,
+                                    shrinkA=10, shrinkB=10, lw=1,
+                                    patchA=None, patchB=None,
+                                    connectionstyle=connect,
+                                    ), )

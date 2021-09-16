@@ -5,7 +5,6 @@ Created on Mon Jul  5 18:23:10 2021
 @author: ShaharGroup-fyu
 """
 # Optional module
-import os
 
 import mdtraj as md
 import numpy as np
@@ -39,7 +38,7 @@ class Contactmap:
         [cont, pairs] = md.compute_contacts(self.traj, contacts='all', scheme='CA', ignore_nonprotein=True)
         print(self.name)
         for index, i in enumerate(pairs):
-            if (i[1] - i[0]) < 3:
+            if (i[1] - i[0]) < 4:
                 index_list.append(index)
         cont = np.delete(cont, index_list, axis=1)
         pairs = np.delete(pairs, index_list, axis=0)
@@ -100,7 +99,7 @@ def loadtraj(repeats, pdbtype='__START_0.pdb', stdoutput=0, traj_selection=0, sw
     return r, jframe
 
 
-def generate_contactmap(protein_name, repeats=5, cutoff=0.8, workpath=0,readfromfile=0):
+def generate_contactmap(protein_name, repeats=5, cutoff=0.8, workpath=0, readfromfile=0):
 #    os.chdir(workpath)
     traj, frames = loadtraj(repeats)
     contact = Contactmap(protein_name, cutoff, traj,readfromfile=readfromfile)

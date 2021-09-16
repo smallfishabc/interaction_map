@@ -15,23 +15,22 @@ import contactmapplot as cm
 import normalization as nl
 import path
 import chunk
+import matplotlib.pyplot as plt
 
-
-def interactionmap_pairwise(name,proteinpath, psi, residue):
+def interactionmap_chunk(name,proteinpath, psi, residue):
     print(proteinpath, psi, residue)
     os.chdir(proteinpath)
     [seq, length] = path.readsequence()
+    graphg = cm.create_network(seq, length)
+    (pos, layout) = cm.create_position(graphg)
+    (negacharged, posicharged, aromatic) = cm.seq_color(seq)
+    (fig, ax) = cm.create_color_coding(seq, graphg, pos, negacharged, posicharged, aromatic)
     workpath = path.subdir(proteinpath, psi, residue)
     contact=contactmapgeneration.generate_contactmap(name,readfromfile=0)
-    location,value =chunk.mapping_chunk(name,7,contact.contact,contact.pair)
-    interaction, raw_value = nl.normalization(value,location,a1=1.29,b1=-1.22)
-    #contMean, pairs = average_contmean(trajlist)
-    #testchunk=chunk.Chunk(15,10,'15_10',5,contact.contact,contact.pair)
-    # testchunklist=normalization.chunklist(contMean,pairs,10,5)
-    # interaction = normalization.chunk_normalization(testchunklist)
-    # interaction, raw_value = nl.normalization(contact.contact, contact.pair)
-    # np.savetxt("interaction.csv", interaction, delimiter=",")
-    # np.savetxt("raw_value.csv", raw_value, delimiter=",")
-    # print(interaction)
-    cm.interaction_map(seq, length, interaction, raw_value, location, 'contact_S_0', value)
+    location,value=chunk.full_mapping_chunk(name,contact.contact,contact.pair)
+    for index,i in enumerate(location):
+        interaction,raw_value=nl.chunk_normalization(value[index],i)
+        cm.interaction_map_chunk(seq, length, interaction, raw_value, i, layout , ax, 'contact_S_0', value[index])
+        cm.interaction_map_chunk(seq, length, interaction, raw_value, i, layout , ax, 'contact_S_0', value[index])
+    plt.show()
 

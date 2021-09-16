@@ -1,5 +1,6 @@
 import numpy as np
 
+
 # Here we created a sequence chunk. The sequence chunk is the combination of several consecutive residue.
 # We will compute the average interaction strength across the entire chunk
 class Chunk():
@@ -38,6 +39,13 @@ class Chunk():
             plist.append(pair)
         return plist
 
+    def pair_list(self):
+        plist = []
+        for index, i in enumerate(self.left_residue_list):
+            pair = [i, self.right_residue_list[index]]
+            plist.append(pair)
+        return plist
+
     def calc_interact(self, contactmap, pairs):
         interaction_list = []
         temp_pairs = pairs.tolist()
@@ -50,27 +58,52 @@ class Chunk():
     def sum_interact(self):
         average = np.average(self.interact_list)
         self.interact = average
+
+
 #        print(average)
 
 
 def mapping_chunk(name, distance, contact_map, pairs, chunk_size=5):
-    location=[]
-    object=[]
-    value=[]
+    location = []
+    object = []
+    value = []
     start = pairs[0][0]
     end = pairs[-1][-1]
     i = start
     while i < end:
-            test = Chunk(i, distance, name + str(i), chunk_size, contact_map, pairs)
-            if test.left_residue_list[0] >= start and test.right_residue_list[-1] <= end:
-                chunk = test
-                chunk.calc_interact(contact_map,pairs)
-                chunk.sum_interact()
-                object.append(chunk)
-                value.append(chunk.interact)
-                location.append(chunk.pair)
-            i+=1
-    location=np.array(location)
-    value=np.array(value)
-    #simple=dict(zip(location,value))
-    return location,value
+        test = Chunk(i, distance, name + str(i), chunk_size, contact_map, pairs)
+        if test.left_residue_list[0] >= start and test.right_residue_list[-1] <= end:
+            chunk = test
+            chunk.calc_interact(contact_map, pairs)
+            chunk.sum_interact()
+            object.append(chunk)
+            value.append(chunk.interact)
+            location.append(chunk.pair)
+        i += 1
+    location = np.array(location)
+    value = np.array(value)
+    # simple=dict(zip(location,value))
+    return location, value, object
+
+
+def full_mapping_chunk(name, contact_map, pairs, chunk_size=5):
+    location_list = []
+    value_list = []
+    start = pairs[0][0]
+    end = pairs[-1][-1]
+    length = end - start
+    max_distance = length - 4
+    for j in range(4, max_distance + 1):
+        location_fragment, value_fragment , a = mapping_chunk(name, j, contact_map, pairs)
+        location_list.append(location_fragment)
+        value_list.append(value_fragment)
+    return (location_list, value_list)
+
+# def mapping_chunk_certain_residue(name,residue,contact_map,pairs,chunk_size=5):
+#     start = pairs[0][0]
+#     end = pairs[-1][-1]
+#     index_list=[]
+#     for index,i in pairs:
+#         if i[0]==residue:
+#             index_list.append(index)
+#         elif i[1]==residue:
