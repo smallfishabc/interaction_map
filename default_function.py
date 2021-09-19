@@ -31,6 +31,6 @@ def interactionmap_chunk(name,proteinpath, psi, residue):
     for index,i in enumerate(location):
         interaction,raw_value=nl.chunk_normalization(value[index],i)
         cm.interaction_map_chunk(seq, length, interaction, raw_value, i, layout , ax, 'contact_S_0', value[index])
-        cm.interaction_map_chunk(seq, length, interaction, raw_value, i, layout , ax, 'contact_S_0', value[index])
+    #    cm.interaction_map_chunk(seq, length, interaction, raw_value, i, layout , ax, 'contact_S_0', value[index])
     plt.show()
 

@@ -13,6 +13,16 @@ def getcurrentpath():
     return pwd
 
 
+# Automaticlly change folder and do analysis on every subfolder
+def subdir(pwd, p, h):
+    print(p)
+    print(h)
+    string = str(pwd) + '/' + h + '/' + p
+    os.chdir(string)
+    print(string)
+    return string
+
+
 def readsequence():
     # Read protein sequences
     seqopen = open('seq.fasta', 'r')
@@ -25,13 +35,31 @@ def readsequence():
     return seq, x
 
 
-# Automaticlly change folder and do analysis on every subfolder
-def subdir(pwd, p, h):
-    print(p)
-    print(h)
-    string = str(pwd) + '/' + h + '/' + p
-    os.chdir(string)
-    print(string)
-    return string
+def detect_residue(type, seq):
+    target = []
+    nega_charged = ['D', 'E']
+    posi_charged = ['R', 'K', 'H']
+    aromatic = ['F', 'Y', 'W']
+    polar = ['S', 'T', 'N', 'Q']
+    hydrophobic = ['A', 'V', 'I', 'L', 'M']
+    hydrophilic = ['Q', 'N', 'S', 'T', 'H']
+    if type == 'nega_charged':
+        standard = nega_charged
+    elif type == 'posi_charged':
+        standard = posi_charged
+    elif type == 'aromatic':
+        standard = aromatic
+    elif type == 'polar':
+        standard = polar
+    elif type == 'hydrophobic':
+        standard = hydrophobic
+    elif type == 'hydrophilic':
+        standard = hydrophilic
+    else:
+        raise NameError('Wrong type')
+    for index, i in enumerate(seq):
+        if i in standard:
+            target.append(index)
+    return target
 
 # Actuall function start here

@@ -92,18 +92,42 @@ def full_mapping_chunk(name, contact_map, pairs, chunk_size=5):
     start = pairs[0][0]
     end = pairs[-1][-1]
     length = end - start
-    max_distance = length - 4
-    for j in range(4, max_distance + 1):
+    max_distance = length - 5
+    for j in range(5, max_distance + 1):
         location_fragment, value_fragment , a = mapping_chunk(name, j, contact_map, pairs)
         location_list.append(location_fragment)
         value_list.append(value_fragment)
     return (location_list, value_list)
+# Input a list containing all special residues. Analysing list and plot all the interaction containing at least
+# one special residue
+def mapping_chunk_special_residue_list(special_list,name,residue,contact_map,pairs):
+    sum_location_list=[]
+    sum_value_list=[]
+    for i in special_list:
+        location,value=mapping_chunk_certain_residue_single(name,i,contact_map,pairs)
+        sum_location_list.append(location)
+        sum_value_list.append(value)
+    return sum_location_list,sum_value_list
 
-# def mapping_chunk_certain_residue(name,residue,contact_map,pairs,chunk_size=5):
-#     start = pairs[0][0]
-#     end = pairs[-1][-1]
-#     index_list=[]
-#     for index,i in pairs:
-#         if i[0]==residue:
-#             index_list.append(index)
-#         elif i[1]==residue:
+def mapping_chunk_certain_residue_single(name,residue,contact_map,pairs,chunk_size=5):
+    value=[]
+    location=[]
+    start = pairs[0][0]
+    end = pairs[-1][-1]
+    index_list=[]
+    for index,i in pairs:
+        if i[0]==residue:
+            index_list.append(index)
+        elif i[1]==residue:
+            index_list.append(index)
+    for k in index_list:
+        distance= pairs[index][1]-pairs[index][0]
+        left_residue=pairs[index][0]
+        chunk = Chunk(i, distance, name + str(left_residue), chunk_size, contact_map, pairs)
+        chunk.calc_interact(contact_map, pairs)
+        chunk.sum_interact()
+        value.append(chunk.interact)
+        location.append(chunk.pair)
+    location = np.array(location)
+    value = np.array(value)
+    return location,value

@@ -25,6 +25,7 @@ def create_network(seq, length, size=10):
 
 # To help us identify different amino acid. We color code negative charged residues , positive
 # charged residues and aromatic residues with different colors.
+# Should be moved to path
 def seq_color(seq):
     negacharged = []
     posicharged = []
@@ -173,6 +174,7 @@ def chunk_plot(pairs, layout, ax, intertype, strength):
             colorset = 'lightyellow'
             connect = "arc3,rad=0.01"
     for index, edge in enumerate(pairs):
+
         # Adjust location to improve visualization effect
         a = layout[edge[0]-2][0]
         b = layout[edge[0]-2][1]+0.2
