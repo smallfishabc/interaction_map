@@ -20,6 +20,7 @@ def create_network(seq, length, size=10):
     while i < (length + 1):
         graphg.add_node(i, residue=seq[i - 1], pos=(i, size))
         i += 1
+
     return graphg
 
 
@@ -89,14 +90,14 @@ def interaction_plotting(reaction, raw_value, pairs, layout, ax, intertype, stre
             colorset = 'green'
             connect = "arc3,rad=-0.5"
         if inot == 1:
-            colorset = 'aquamarine'
+            colorset = 'lightblue'
             connect = "arc3,rad=-0.5"
     elif intertype == 'rep':
         if inot == -2:
             colorset = 'red'
             connect = "arc3,rad=0.5"
         if inot == -1:
-            colorset = 'mistyrose'
+            colorset = 'orange'
             connect = "arc3,rad=0.5"
     # Remove unnecessary pairs
     indexlist = []
@@ -115,7 +116,7 @@ def interaction_plotting(reaction, raw_value, pairs, layout, ax, intertype, stre
             print(linewidth)
         else:
         #    linewidth = -1 * raw_value_new[index]
-            linewidth = -10*target_new[index]*inot
+            linewidth = -2*target_new[index]*inot
         # Adjust location to improve visualization effect
         a = layout[edge[0]][0] - 0.2
         b = layout[edge[0]][1]
@@ -145,6 +146,7 @@ def interaction_map(seq, length, interaction, raw_value, pairs, figname,targetma
     interaction_plotting(interaction, raw_value, pairs, layout, ax, 'att', 2,targetmap)
     interaction_plotting(interaction, raw_value, pairs, layout, ax, 'rep', -1,targetmap)
     interaction_plotting(interaction, raw_value, pairs, layout, ax, 'rep', -2,targetmap)
+    graphg.add_edge(1,5)
     # Save and demonstrate the plot
     plt.savefig(figname + '.png')
     plt.show()

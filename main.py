@@ -28,7 +28,7 @@ if __name__ == "__main__":
         # path = 'F:\globus\simulation_sticker_spacer\F1_GS_40-summary'
         # path='F:\globus\simulation_contactmap_validation\GS44-summary'
         # path = 'F:\DATA_F\GSlinker\GS56-summary'
-        path = 'F:\DATA_F\puma_scramble_new\puma123\puma_wildfull-summary'
+        path = 'F:\DATA_F\puma_scramble_new\puma123\puma_scramble_3-summary'
     if args.name:
         name = args.name
     elif single_traj is not 1:
