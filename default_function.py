@@ -6,67 +6,85 @@ Created on Mon Aug  9 12:36:23 2021
 """
 
 import os
-
+import json
 import numpy as np
 
 import contactmapgeneration
 import contactmapgeneration as cg
 import contactmapplot as cm
 import normalization as nl
-import path
+import readpath
+import pandas as pd
 
-
-# def average_contmean(trajlist):
-#     nn = 0
-#     repeats=len(trajlist)
-#     contactlist=[]
-#     framelist=[]
-#     framesum = 0
-#     print(os.getcwd())
-#     for n in trajlist:
-#         traj, frame = cg.loadtraj(n)
-#         [pairs, contMean] = cg.computecontact(traj, 6, 0.8)
-#         np.savetxt("test" + str(n) + "contact.csv", contMean, delimiter=",")
-#         np.savetxt("test" + str(n) + "pairs.csv", pairs, delimiter=",")
-#         if nn == 0:
-#             contMeansum = np.empty_like(contMean)
-#         frametest = np.multiply(frame, contMean)
-#         framelist.append(frame)
-#         contactlist.append(frametest)
-#         np.savetxt(str(n) + "frametest.csv",frametest, delimiter=",")
-#         contMeansum += np.multiply(frame, contMean)
-#         framesum += frame
-#         del traj
-#         frame = 0
-#         nn += 1
-#     np.savetxt("sumcontact.csv", contMeansum, delimiter=",")
-#     contMean = np.true_divide(contMeansum, framesum)
-#     np.savetxt("averagecontact.csv", contMean, delimiter=",")
-#     contactall = sum(contactlist)
-#     frameall = sum(framelist)
-#     contMean2 = []
-#     for i in contactall:
-#         a=i/frameall
-#         contMean2.append(a)
-#     np.savetxt("newaveragecontact.csv",contMean2,delimiter=",")
-#     return contMean2, pairs
-
-
-def interactionmap_pairwise(name,proteinpath, psi, residue):
+def interactionmap_pairwise(name, proteinpath, psi, residue, read_from_file):
+#    if read_from_file = 0:
+#        generate=1
     print(proteinpath, psi, residue)
     os.chdir(proteinpath)
-    [seq, length] = path.readsequence()
-    workpath = path.subdir(proteinpath, psi, residue)
-    #trajlist = [0, 1, 2, 3, 4]
-    contact=contactmapgeneration.generate_contactmap(name)
-    #contMean, pairs = average_contmean(trajlist)
-    # testchunk=normalization.chunk(15,10,'15_10',5,contMean,pairs)
-    # testchunklist=normalization.chunklist(contMean,pairs,10,5)
-    # interaction = normalization.chunk_normalization(testchunklist)
-    interaction, raw_value = nl.normalization(contact.contact, contact.pair)
-    np.savetxt("interaction.csv", interaction, delimiter=",")
-    np.savetxt("raw_value.csv", raw_value, delimiter=",")
-    # print(interaction)
-    cm.interaction_map(seq, length, interaction, raw_value, contact.pair, 'contact_S_0', contact.contact)
+    [seq, length] = readpath.readsequence()
+    workpath = readpath.subdir(proteinpath, psi, residue)
+    # trajlist = [0, 1, 2, 3, 4]
+    if read_from_file == 0:
+        print('start1')
+        contact = contactmapgeneration.generate_contactmap(name)
+        print('end1')
+        interaction, raw_value = nl.normalization(contact.contact, contact.pair)
+        print('end11')
+        np.savetxt("interaction.csv", interaction, delimiter=",")
+        np.savetxt("raw_value.csv", raw_value, delimiter=",")
+    else:
+        contact = contactmapgeneration.generate_contactmap(name, read_from_file)
+        interaction = np.loadtxt("interaction.csv", delimiter=",")
+        raw_value = np.loadtxt("raw_value.csv", delimiter=",")
+    print('start2')
+    att1, att2, rep1, rep2 = cm.interaction_map_calc(seq, length, interaction, raw_value, contact.pair, 'contact_S_0',
+                                                contact.contact)
+    print('end2')
+    return att1, att2, rep1, rep2
 
-# interactionmapmain('F:\globus\simulation_contactmap_validation\GS22-summary','S_0','BB')
+def interactionmap_pairwise_pre(name, proteinpath, psi, residue, read_from_file):
+    print(proteinpath, psi, residue)
+    os.chdir(proteinpath)
+    [seq, length] = readpath.readsequence()
+    workpath = readpath.subdir(proteinpath, psi, residue)
+    contact = contactmapgeneration.generate_contactmap(name, read_from_file)
+    del contact
+    print(contact)
+# def test_function(name, protein_path, residue, testlist= ['-3', '-2', '-1', '0', '1', '2', '3']):
+#     print(testlist)
+#     testlist = testlist[1:-1].split(', ')
+#     # testlist=[n.strip() for n in testlist]
+#     # print(testlist)
+#     for i in range(0, len(testlist)):
+#         testlist[i] = float(testlist[i][1:-1])
+#     testlist.sort()
+#     for i in range(0, len(testlist)):
+#          testlist[i] = str(testlist[i])
+#     #testlist = ['-3', '-2', '-1', '0', '1', '2', '3']
+#     att1_list = []
+#     att2_list = []
+#     rep1_list = []
+#     rep2_list = []
+#     for psi in testlist:
+#         att1, att2, rep1, rep2 = interactionmap_pairwise(name, protein_path, psi, residue)
+#         att1_list.append(att1)
+#         att2_list.append(att2)
+#         rep1_list.append(rep1)
+#         rep2_list.append(rep2)
+#     dataframe = pd.DataFrame(
+#         {'MTFE': testlist, 'att1': att1_list, 'att2': att2_list, 'rep1': rep1_list, 'rep2': rep2_list})
+#     pcsv ='BB_contact_lines.csv'
+#     os.chdir(protein_path)
+#     dataframe.to_csv(pcsv, index=False, sep=',')
+#
+# if __name__ == "__main__":
+#     directory = 'F:\DATA_F\PDBsum'
+#     os.chdir(directory)
+#     df = pd.read_csv('database_entry.csv')
+#     for i in range(len(df)):
+#         name = df.loc[i, 'Protein']
+#         protein_path= df.loc[i, 'Directory']
+#         psivalue=df.loc[i, 'Psivalue']
+#         residue = 'BB'
+#         test_function(name, protein_path, residue , psivalue)
+#         os.chdir(directory)

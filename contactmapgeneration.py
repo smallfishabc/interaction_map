@@ -20,31 +20,32 @@ import numpy as np
 # I have already changed working directory in the main script. We can set traj_path to alter the
 # working directory if needed.
 class Contactmap:
-    def __init__(self, name, cutoff, traj, traj_path=0, readfromfile=0):
+    def __init__(self, name, cutoff, traj=0, traj_path=0, readfromfile=0):
         self.name = name
         self.cutoff = cutoff
-        self.traj = traj
-        # self.traj_path = traj_path
-        # os.chdir(traj_path)
+        #self.traj_path = traj_path
+        #os.chdir(traj_path)
         if readfromfile == 0:
+            self.traj=traj
             self.pair, self.contact = self.compute_contact()
             self.save_pair()
             self.save_contact()
-        else:
+            print('finish2')
+        elif readfromfile == 1:
+            self.traj = 'from_read'
             self.contact = self.read_contact()
             self.pair = self.read_pair()
 
     def compute_contact(self):
         index_list = []
         [cont, pairs] = md.compute_contacts(self.traj, contacts='all', scheme='CA', ignore_nonprotein=True)
-        print(self.cutoff)
+        print('finish1')
         for index, i in enumerate(pairs):
             if (i[1] - i[0]) < 3:
                 index_list.append(index)
         cont = np.delete(cont, index_list, axis=1)
         pairs = np.delete(pairs, index_list, axis=0)
         contact = (cont < self.cutoff)
-        np.savetxt("debug.csv", contact, delimiter=",")
         cont_mean = contact.mean(0)
         del contact
         return pairs, cont_mean
@@ -100,7 +101,11 @@ def loadtraj(repeats, pdbtype='__START_0.pdb', stdoutput=0, traj_selection=0, sw
     return r, jframe
 
 
-def generate_contactmap(protein_name, repeats=5, cutoff=0.8, workpath=0):
-    traj, frames = loadtraj(repeats)
-    contact = Contactmap(protein_name, cutoff, traj)
+def generate_contactmap(protein_name, read_from_file=0, repeats=5, cutoff=0.8, workpath=0):
+    if read_from_file==0:
+        traj, frames = loadtraj(repeats)
+        contact = Contactmap(protein_name, cutoff, traj)
+    elif read_from_file==1:
+        contact = Contactmap(protein_name, cutoff, readfromfile=read_from_file)
+    print('finished')
     return contact

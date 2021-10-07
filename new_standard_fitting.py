@@ -15,6 +15,6 @@ import re
 import statistics as st
 from scipy import optimize
 from scipy import special
-import path
+import readpath
 import contactmapgeneration
-pwd=path.getcwdu()
+#pwd=readpath.getcwdu()

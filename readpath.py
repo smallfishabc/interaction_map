@@ -26,7 +26,8 @@ def readsequence():
 
 
 # Automaticlly change folder and do analysis on every subfolder
-def subdir(pwd, p, h):
+def subdir(pwd, psi, h):
+    p='S_'+str(psi)
     print(p)
     print(h)
     string = str(pwd) + '/' + h + '/' + p

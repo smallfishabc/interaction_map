@@ -10,9 +10,11 @@ import numpy as np
 
 import networkx as nx
 
-
 # Create the networkx graph
 #### problem need to be solved: width of the graph
+import interaction_strength
+
+
 def create_network(seq, length, size=10):
     graphg = nx.MultiDiGraph()
     # Add residue node to network graphics
@@ -83,7 +85,7 @@ def create_color_coding(seq, graphg, pos, negacharged, posicharged, aromatic, fi
 
 
 # Plot selected interaction line
-def interaction_plotting(reaction, raw_value, pairs, layout, ax, intertype, strength, targetmap):
+def interaction_plotting(interaction, raw_value, pairs, layout, ax, intertype, strength, targetmap):
     inot = strength  # default
     if intertype == 'att':
         if inot == 2:
@@ -101,22 +103,33 @@ def interaction_plotting(reaction, raw_value, pairs, layout, ax, intertype, stre
             connect = "arc3,rad=0.5"
     # Remove unnecessary pairs
     indexlist = []
-    for index, i in enumerate(reaction):
+    for index, i in enumerate(interaction):
         if i != inot:
             indexlist.append(index)
     pairsnew = np.delete(pairs, indexlist, axis=0)
-    reaction_value = np.delete(reaction, indexlist, axis=0)
+    reaction_value = np.delete(interaction, indexlist, axis=0)
     raw_value_new = np.delete(raw_value, indexlist, axis=0)
     target_new = np.delete(targetmap, indexlist, axis=0)
+    # During the debug process, we only consider the condition when inot>0.
+    if inot > 0:
+        full_strength, overall_strength = interaction_strength.calculate_overall_strength(pairsnew, raw_value,
+                                                                                          interaction, target_new)
+    else:
+        full_strength = []
+        overall_strength = -1
     np.savetxt(intertype + str(inot) + 'interaction_pair.csv', pairsnew, delimiter=',')
+    # I save two text file for testing
+    np.savetxt(intertype + str(inot) + 'full_strength.csv', full_strength, delimiter=',')
     for index, edge in enumerate(pairsnew):
         if inot > 0:
-        #    linewidth = raw_value_new[index]
-            linewidth = 2*target_new[index]*inot
+            #    linewidth = raw_value_new[index]
+            linewidth = 2 * target_new[index] * inot
+            distance = edge[1] - edge[0]
+            interaction_strength.calculate_individual_strength(distance, raw_value_new[index])
             print(linewidth)
         else:
-        #    linewidth = -1 * raw_value_new[index]
-            linewidth = -2*target_new[index]*inot
+            #    linewidth = -1 * raw_value_new[index]
+            linewidth = -2 * target_new[index] * inot
         # Adjust location to improve visualization effect
         a = layout[edge[0]][0] - 0.2
         b = layout[edge[0]][1]
@@ -131,9 +144,10 @@ def interaction_plotting(reaction, raw_value, pairs, layout, ax, intertype, stre
                                     patchA=None, patchB=None,
                                     connectionstyle=connect,
                                     ), )
+    return overall_strength
 
 
-def interaction_map(seq, length, interaction, raw_value, pairs, figname,targetmap):
+def interaction_map(seq, length, interaction, raw_value, pairs, figname, targetmap):
     # Create network object
     graphg = create_network(seq, length)
     # Obtain position list
@@ -142,11 +156,46 @@ def interaction_map(seq, length, interaction, raw_value, pairs, figname,targetma
     (negacharged, posicharged, aromatic) = seq_color(seq)
     (fig, ax) = create_color_coding(seq, graphg, pos, negacharged, posicharged, aromatic)
     # Plot interaction between each residue
-    interaction_plotting(interaction, raw_value, pairs, layout, ax, 'att', 1,targetmap)
-    interaction_plotting(interaction, raw_value, pairs, layout, ax, 'att', 2,targetmap)
-    interaction_plotting(interaction, raw_value, pairs, layout, ax, 'rep', -1,targetmap)
-    interaction_plotting(interaction, raw_value, pairs, layout, ax, 'rep', -2,targetmap)
-    graphg.add_edge(1,5)
+    att1 = interaction_plotting(interaction, raw_value, pairs, layout, ax, 'att', 1, targetmap)
+    att2 = interaction_plotting(interaction, raw_value, pairs, layout, ax, 'att', 2, targetmap)
+    rep1 = interaction_plotting(interaction, raw_value, pairs, layout, ax, 'rep', -1, targetmap)
+    rep2 = interaction_plotting(interaction, raw_value, pairs, layout, ax, 'rep', -2, targetmap)
+    graphg.add_edge(1, 5)
     # Save and demonstrate the plot
     plt.savefig(figname + '.png')
     plt.show()
+    return (att1, att2, rep1, rep2)
+
+
+def interaction_plotting_calc(interaction, raw_value, pairs, intertype, strength, targetmap):
+    # Remove unnecessary pairs
+    inot = strength
+    indexlist = []
+    for index, i in enumerate(interaction):
+        if i != inot:
+            indexlist.append(index)
+    pairsnew = np.delete(pairs, indexlist, axis=0)
+    reaction_value = np.delete(interaction, indexlist, axis=0)
+    raw_value_new = np.delete(raw_value, indexlist, axis=0)
+    target_new = np.delete(targetmap, indexlist, axis=0)
+    # During the debug process, we only consider the condition when inot>0.
+    # if inot > 0:
+    # 10/7/2021 Bugfixed: wrong data is passed to following functions
+    full_strength, overall_strength = interaction_strength.calculate_overall_strength(pairsnew, raw_value_new,
+                                                                                          reaction_value, target_new)
+    # else:
+    #     full_strength = []
+    #     overall_strength = -1
+    np.savetxt(intertype + str(inot) + 'interaction_pair.csv', pairsnew, delimiter=',')
+    # I save two text file for testing
+    np.savetxt(intertype + str(inot) + 'full_strength.csv', full_strength, delimiter=',')
+    return overall_strength
+
+
+def interaction_map_calc(seq, length, interaction, raw_value, pairs, figname, targetmap):
+    att1 = interaction_plotting_calc(interaction, raw_value, pairs, 'att', 1, targetmap)
+    att2 = interaction_plotting_calc(interaction, raw_value, pairs, 'att', 2, targetmap)
+    rep1 = interaction_plotting_calc(interaction, raw_value, pairs, 'rep', -1, targetmap)
+    rep2 = interaction_plotting_calc(interaction, raw_value, pairs, 'rep', -2, targetmap)
+    # Save and demonstrate the plot
+    return (att1, att2, rep1, rep2)
