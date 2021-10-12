@@ -23,10 +23,10 @@ class Contactmap:
     def __init__(self, name, cutoff, traj=0, traj_path=0, readfromfile=0):
         self.name = name
         self.cutoff = cutoff
-        #self.traj_path = traj_path
-        #os.chdir(traj_path)
+        # self.traj_path = traj_path
+        # os.chdir(traj_path)
         if readfromfile == 0:
-            self.traj=traj
+            self.traj = traj
             self.pair, self.contact = self.compute_contact()
             self.save_pair()
             self.save_contact()
@@ -80,12 +80,15 @@ def loadtraj(repeats, pdbtype='__START_0.pdb', stdoutput=0, traj_selection=0, sw
     if switch is 1:
         t = md.load(traj_name, top=pdbtype)
     elif traj_selection is 0:
-    # Need further modification
-    #    for i in range(repeats):
+        # Need further modification
+        #    for i in range(repeats):
         if repeats is 5:
-            t = md.load({'__traj_0.xtc','__traj_1.xtc','__traj_2.xtc','__traj_3.xtc','__traj_4.xtc'},top=pdbtype)
+            t = md.load({'__traj_0.xtc', '__traj_1.xtc', '__traj_2.xtc', '__traj_3.xtc', '__traj_4.xtc'}, top=pdbtype)
         elif repeats is 3:
-            t = md.load({'__traj_0.xtc','__traj_1.xtc','__traj_2.xtc'},top=pdbtype)
+            try:
+                t = md.load({'__traj_0.xtc', '__traj_1.xtc', '__traj_2.xtc'}, top=pdbtype)
+            except:
+                t = md.load({'__traj_0.xtc', '__traj_1.xtc', '__traj_2.xtc'}, top='__END_0.pdb')
             # t = md.load('__traj_' + str(i) + '.xtc', top=pdbtype)
             # if stdoutput is 1:
             #     tlist.append(t)
@@ -102,10 +105,10 @@ def loadtraj(repeats, pdbtype='__START_0.pdb', stdoutput=0, traj_selection=0, sw
 
 
 def generate_contactmap(protein_name, repeats=5, read_from_file=0, cutoff=0.8, workpath=0):
-    if read_from_file==0:
+    if read_from_file == 0:
         traj, frames = loadtraj(repeats)
         contact = Contactmap(protein_name, cutoff, traj)
-    elif read_from_file==1:
+    elif read_from_file == 1:
         contact = Contactmap(protein_name, cutoff, readfromfile=read_from_file)
     print('finished')
     return contact
