@@ -15,7 +15,7 @@ def calculate_overall_strength(pairs, raw_value, interaction, contactmap, inter_
         value = raw_value[index]
         interact = interaction[index]
         contact = contactmap[index]
-        strength = calculate_individual_strength2(distance, value)
+        strength = calculate_individual_strength(distance, value)
         full_strength[index] = strength
     overall_strength = full_strength.sum()
     return full_strength, overall_strength
@@ -29,5 +29,6 @@ def calculate_individual_strength(distance, raw_value):
     return strength
 
 def calculate_individual_strength2(distance, raw_value):
+    print(raw_value)
     strength = np.sqrt(distance)*raw_value
     return strength
