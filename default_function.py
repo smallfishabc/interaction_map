@@ -19,6 +19,7 @@ import pandas as pd
 def interactionmap_pairwise(name, proteinpath, psi, residue, read_from_file):
 #    if read_from_file = 0:
 #        generate=1
+    read_from_file=0
     print(proteinpath, psi, residue)
     os.chdir(proteinpath)
     [seq, length] = readpath.readsequence()
@@ -26,7 +27,10 @@ def interactionmap_pairwise(name, proteinpath, psi, residue, read_from_file):
     # trajlist = [0, 1, 2, 3, 4]
     if read_from_file == 0:
         print('start1')
-        contact = contactmapgeneration.generate_contactmap(name)
+        try:
+            contact = contactmapgeneration.generate_contactmap(name)
+        except:
+            contact = contactmapgeneration.generate_contactmap(name,repeats=3)
         print('end1')
         interaction, raw_value = nl.normalization(contact.contact, contact.pair)
         print('end11')
