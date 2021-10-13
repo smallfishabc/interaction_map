@@ -16,10 +16,10 @@ import normalization as nl
 import readpath
 import pandas as pd
 
-def interactionmap_pairwise(name, proteinpath, psi, residue, read_from_file):
+def interactionmap_pairwise(name, proteinpath, psi, residue, read_from_file=0):
 #    if read_from_file = 0:
 #        generate=1
-    read_from_file=0
+    #read_from_file=0
     print(proteinpath, psi, residue)
     os.chdir(proteinpath)
     [seq, length] = readpath.readsequence()
