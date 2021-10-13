@@ -54,41 +54,4 @@ def interactionmap_pairwise_pre(name, proteinpath, psi, residue, read_from_file)
     contact = contactmapgeneration.generate_contactmap(name, read_from_file)
     del contact
     print(contact)
-# def test_function(name, protein_path, residue, testlist= ['-3', '-2', '-1', '0', '1', '2', '3']):
-#     print(testlist)
-#     testlist = testlist[1:-1].split(', ')
-#     # testlist=[n.strip() for n in testlist]
-#     # print(testlist)
-#     for i in range(0, len(testlist)):
-#         testlist[i] = float(testlist[i][1:-1])
-#     testlist.sort()
-#     for i in range(0, len(testlist)):
-#          testlist[i] = str(testlist[i])
-#     #testlist = ['-3', '-2', '-1', '0', '1', '2', '3']
-#     att1_list = []
-#     att2_list = []
-#     rep1_list = []
-#     rep2_list = []
-#     for psi in testlist:
-#         att1, att2, rep1, rep2 = interactionmap_pairwise(name, protein_path, psi, residue)
-#         att1_list.append(att1)
-#         att2_list.append(att2)
-#         rep1_list.append(rep1)
-#         rep2_list.append(rep2)
-#     dataframe = pd.DataFrame(
-#         {'MTFE': testlist, 'att1': att1_list, 'att2': att2_list, 'rep1': rep1_list, 'rep2': rep2_list})
-#     pcsv ='BB_contact_lines.csv'
-#     os.chdir(protein_path)
-#     dataframe.to_csv(pcsv, index=False, sep=',')
-#
-# if __name__ == "__main__":
-#     directory = 'F:\DATA_F\PDBsum'
-#     os.chdir(directory)
-#     df = pd.read_csv('database_entry.csv')
-#     for i in range(len(df)):
-#         name = df.loc[i, 'Protein']
-#         protein_path= df.loc[i, 'Directory']
-#         psivalue=df.loc[i, 'Psivalue']
-#         residue = 'BB'
-#         test_function(name, protein_path, residue , psivalue)
-#         os.chdir(directory)
+
