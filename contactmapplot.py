@@ -14,7 +14,7 @@ import networkx as nx
 #### problem need to be solved: width of the graph
 import interaction_strength
 
-
+# Create a  networkx graph object
 def create_network(seq, length, size=10):
     graphg = nx.MultiDiGraph()
     # Add residue node to network graphics
@@ -29,9 +29,11 @@ def create_network(seq, length, size=10):
 # To help us identify different amino acid. We color code negative charged residues , positive
 # charged residues and aromatic residues with different colors.
 def seq_color(seq):
+    # Create empty list
     negacharged = []
     posicharged = []
     aromatic = []
+    # Identify special residues and append into corresponding list
     for index, i in enumerate(seq):
         if i in ['D', 'E']:
             negacharged.append(index)
@@ -44,6 +46,7 @@ def seq_color(seq):
 
 # Produce position matrix and layout.
 def create_position(graphg):
+    # Get the position and the layout for the networkx nodes
     pos = nx.get_node_attributes(graphg, 'pos')
     layout = dict((n, graphg.node[n]["pos"]) for n in graphg.nodes())
     return pos, layout
@@ -51,8 +54,11 @@ def create_position(graphg):
 
 # Plot function of sequence color coding
 def color_text(pos, index, colorselec, seq, ax):
+    # Get the position of each residue
     (x, y) = pos[index + 1]
+    # Get the name of each residue
     label = seq[index]  # this makes "1" and 1 labeled the same
+    # Color coding the sequence
     ax.text(
         x - 0.2,
         y,
@@ -161,9 +167,11 @@ def interaction_map(seq, length, interaction, raw_value, pairs, figname, targetm
     rep1 = interaction_plotting(interaction, raw_value, pairs, layout, ax, 'rep', -1, targetmap)
     rep2 = interaction_plotting(interaction, raw_value, pairs, layout, ax, 'rep', -2, targetmap)
     graphg.add_edge(1, 5)
-    # Save and demonstrate the plot
+    # Save the plot to png file
     plt.savefig(figname + '.png')
+    # Show the plot
     plt.show()
+    # Return the interaction strength
     return (att1, att2, rep1, rep2)
 
 

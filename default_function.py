@@ -6,21 +6,17 @@ Created on Mon Aug  9 12:36:23 2021
 """
 
 import os
-import json
 import numpy as np
-
 import contactmapgeneration
-import contactmapgeneration as cg
 import contactmapplot as cm
 import normalization as nl
 import readpath
-import pandas as pd
-
+import contactmapcalculation as cc
 
 # Main function to generate interaction map and calculate the interaction strength
 def interactionmap_pairwise(name, proteinpath, psi, residue, read_from_file=0):
     # Print out the target protein and solution condition
-    print(proteinpath, psi, residue)
+    print(proteinpath, psi, residue,read_from_file)
     # Change dir to the target directory to read data and save analysis results
     os.chdir(proteinpath)
     # Read sequence from seq.fasta
@@ -57,7 +53,7 @@ def interactionmap_pairwise(name, proteinpath, psi, residue, read_from_file=0):
         raw_value = np.loadtxt("raw_value.csv", delimiter=",")
     print('start2')
     # Calculate the interaction strength based on the raw value
-    att1, att2, rep1, rep2 = cm.interaction_map_calc(seq, length, interaction, raw_value, contact.pair, 'contact_S_0',
+    att1, att2, rep1, rep2 = cc.interaction_map_calc(seq, length, interaction, raw_value, contact.pair, 'contact_S_0',
                                                      contact.contact)
     print('end2')
     # Return the overall interaction strength
@@ -66,10 +62,15 @@ def interactionmap_pairwise(name, proteinpath, psi, residue, read_from_file=0):
 # Generating contact map is the speed limit step for this script. This function is designed to generate and store
 # the contact map into file for further analysis. (Under development)
 def interactionmap_pairwise_pre(name, proteinpath, psi, residue, read_from_file):
+    # Check the protein setup
     print(proteinpath, psi, residue)
+    # Change directory to protein folder
     os.chdir(proteinpath)
+    # Read sequence from the fast file
     [seq, length] = readpath.readsequence()
+    # Change directory to actually working directory
     workpath = readpath.subdir(proteinpath, psi, residue)
+    # Generate contact map and save in the text file
     contact = contactmapgeneration.generate_contactmap(name, read_from_file)
+    # Free up memory space
     del contact
-    print(contact)
