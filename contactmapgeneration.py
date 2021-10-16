@@ -21,8 +21,11 @@ import numpy as np
 # working directory if needed.
 class Contactmap:
     def __init__(self, name, cutoff, traj=0, traj_path=0, readfromfile=0):
+        # Protein name
         self.name = name
+        # Cutoff distance for determining the contact
         self.cutoff = cutoff
+        # Location of the protein data file
         # self.traj_path = traj_path
         # os.chdir(traj_path)
         if readfromfile == 0:
@@ -104,7 +107,7 @@ def loadtraj(repeats, pdbtype='__START_0.pdb', stdoutput=0, traj_selection=0, sw
     return r, jframe
 
 
-def generate_contactmap(protein_name, repeats=5, read_from_file=0, cutoff=0.8, workpath=0):
+def generate_contactmap(protein_name, read_from_file=0, cutoff=0.8, workpath=0, repeats=5):
     if read_from_file == 0:
         traj, frames = loadtraj(repeats)
         contact = Contactmap(protein_name, cutoff, traj)

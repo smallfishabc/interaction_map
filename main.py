@@ -28,7 +28,8 @@ if __name__ == "__main__":
         # path = 'F:\globus\simulation_sticker_spacer\F1_GS_40-summary'
         # path='F:\globus\simulation_contactmap_validation\GS44-summary'
         # path = 'F:\DATA_F\GSlinker\GS56-summary'
-        path = 'F:\DATA_F\puma_scramble_new\puma123\puma_scramble_3-summary'
+        # path = 'F:\DATA_F\puma_scramble_new\puma123\puma_scramble_3-summary'
+        path='/media/lemoncatboy/WD_BLACK/DATA_F/puma_scramble_new/puma123/puma_wildfull-summary'
     if args.name:
         name = args.name
     elif single_traj is not 1:
@@ -39,15 +40,15 @@ if __name__ == "__main__":
     if args.psi:
         psi = args.psi
     else:
-        psi = 'S_0'
+        psi = '0'
     if args.restype:
         residue = args.restype
     else:
         residue = 'BB'
     if single_traj is not 1:
-        if test == 1:
-            default_function.test_function(name,path,residue)
-        else:
-            default_function.interactionmap_pairwise(name, path, psi, residue)
-    elif single_traj is 1:
-        default_function.single_traj_contactmap()
+        # if test == 1:
+        #     default_function.test_function(name,path,residue)
+        # else:
+        default_function.interactionmap_pairwise(name, path, psi, residue)
+    # elif single_traj is 1:
+    #     default_function.single_traj_contactmap()
