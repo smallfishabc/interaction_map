@@ -5,22 +5,12 @@ Created on Mon Jul  5 14:37:47 2021
 @author: ShaharGroup-fyu
 """
 import argparse
+import os
+import readpath
 import showoff
 import default_function
 
-if __name__ == "__main__":
-    showoff.welcome()
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--repeat", "-repeat", help="Number of repeats")
-    parser.add_argument("--name", "-name", help="Name of the protein and the contact map")
-    parser.add_argument("--restype", "-restype", help="Name of Residue group, free energy altered")
-    parser.add_argument("--protein_directory", "-o", help="protein directory")
-    parser.add_argument("--psi", "-psi", help="Psi value of transfer free energy")
-    parser.add_argument("--single_traj", "-straj", help="If you want to only process specific protein. Set this value "
-                                                        "to 1. The program will try to find the traj file and pdb file under "
-                                                        "the protein directory")
-    args = parser.parse_args()
-    single_traj = args.single_traj
+def multi_trajectory_test(args):
     test = 1
     if args.protein_directory:
         path = args.protein_directory
@@ -52,3 +42,32 @@ if __name__ == "__main__":
         default_function.interactionmap_pairwise(name, path, psi, residue)
     # elif single_traj is 1:
     #     default_function.single_traj_contactmap()
+
+if __name__ == "__main__":
+    showoff.welcome()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--pdb","-p", help="Input PDB file")
+    parser.add_argument("--xtc","-x", help="Input XTC file")
+    parser.add_argument("--protein_directory", "-dir", help="protein directory")
+    parser.add_argument("--single_traj", "-straj", default=1,help="Determining whether the input is a single pdb. "
+                                                                  "Default value is 1."
+                                                                  "Do not need to change.(test_function)")
+    parser.add_argument("--repeat", "-repeat", help="Number of repeats(test_function)")
+    parser.add_argument("--name", "-name", help="Name of the protein and the contact map(test_function)")
+    parser.add_argument("--restype", "-restype", help="Name of Residue group, free energy altered(test_function)")
+    parser.add_argument("--psi", "-psi", help="Psi value of transfer free energy(test_function)")
+
+    args = parser.parse_args()
+    single_traj = args.single_traj
+    if single_traj==1 :
+        path = args.protein_directory
+        pdb_name=args.pdb
+        xtc_name=args.xtc
+        sequence=readpath.readsequence_single()
+        os.chdir(path)
+        default_function.interactionmap_pairwise_single_traj(path,pdb_name,xtc_name,sequence)
+    else:
+        multi_trajectory_test(args)
+    # For multi trajectory analysis. Internal test only
+
+

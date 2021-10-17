@@ -118,8 +118,7 @@ def interaction_plotting(interaction, raw_value, pairs, layout, ax, intertype, s
     target_new = np.delete(targetmap, indexlist, axis=0)
     # During the debug process, we only consider the condition when inot>0.
     if inot > 0:
-        full_strength, overall_strength = interaction_strength.calculate_overall_strength(pairsnew, raw_value,
-                                                                                          interaction, target_new)
+        full_strength, overall_strength = interaction_strength.calculate_overall_strength(pairsnew, raw_value,interaction, target_new)
     else:
         full_strength = []
         overall_strength = -1
@@ -131,7 +130,6 @@ def interaction_plotting(interaction, raw_value, pairs, layout, ax, intertype, s
             #    linewidth = raw_value_new[index]
             linewidth = 2 * target_new[index] * inot
             distance = edge[1] - edge[0]
-            interaction_strength.calculate_individual_strength(distance, raw_value_new[index])
             print(linewidth)
         else:
             #    linewidth = -1 * raw_value_new[index]

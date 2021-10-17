@@ -5,9 +5,51 @@ import normalization as nl
 # In this module, we define 2 function to calculate the 'true' interaction strength based on normalization
 # and the plotting result. Here the strength should correlate with the IDP solution sensitivity.
 
+# Test of different possible function and distance_factor
+
+# Long-range interaction may have a stronger influence on the IDP conformational ensemble. Therefore, we introduced
+# a distance factor
+
+# Distance factor is proportional to the residue number between the residue pair.
+def distance_factor_A(distance):
+    factor = distance
+    return factor
+
+
+# Distance factor is proportional to the square root of the residue number between the residue pair.
+def distance_factor_B(distance):
+    factor = np.sqrt(distance)
+    return factor
+
+
+# No distance factor
+def distance_factor_none(distance):
+    factor = 1
+    return factor
+
+
+# Interaction strength is proportional to the distance factor
+def calculate_individual_strength_none(distance_factor, contact_none, standard_nono=0):
+    strength = distance_factor
+    return strength
+
+
+# Interaction strength is proportional to the distance factor and the contact probability ratio.
+def calculate_individual_strength_contact_ratio(distance_factor, contact_ratio, standard_ratio=0):
+    # Standard_ratio should be 1 if we want to subtract ideal polymer contact probability from calculation
+    strength = distance_factor * (contact_ratio - standard_ratio)
+    return strength
+
+
+# Interaction strength is proportional the the distance factor and the contact probability value
+def calculate_individual_strength_contact_probability(distance_factor, contact_value, standard_value=0):
+    # Standard_value should be calculated if we want to subtract ideal polymer contact probability from calculation
+    strength = distance_factor * (contact_value - standard_value)
+    return strength
+
 # This function is designed to directly calculate the overall interaction strength based on data in the interaction
 # plot function.
-def calculate_overall_strength(pairs, raw_value, interaction, contactmap, function, factor):
+def calculate_overall_strength(pairs, raw_value, interaction, contactmap, function=calculate_individual_strength_none, factor=distance_factor_none):
     # Create an empty numpy array for interaction strength calculation
     full_strength = np.zeros(pairs.shape[0])
     # Retrieve contact probability and calculate interaction strength for every residue pairs.
@@ -60,44 +102,4 @@ def calculate_overall_strength_multiple(pairs, raw_value, interaction, contactma
     return list_a
 
 
-# Test of different possible function and distance_factor
 
-# Long-range interaction may have a stronger influence on the IDP conformational ensemble. Therefore, we introduced
-# a distance factor
-
-# Distance factor is proportional to the residue number between the residue pair.
-def distance_factor_A(distance):
-    factor = distance
-    return factor
-
-
-# Distance factor is proportional to the square root of the residue number between the residue pair.
-def distance_factor_B(distance):
-    factor = np.sqrt(distance)
-    return factor
-
-
-# No distance factor
-def distance_factor_none(distance):
-    factor = 1
-    return factor
-
-
-# Interaction strength is proportional to the distance factor
-def calculate_individual_strength_none(distance_factor, contact_none, standard_nono=0):
-    strength = distance_factor
-    return strength
-
-
-# Interaction strength is proportional to the distance factor and the contact probability ratio.
-def calculate_individual_strength_contact_ratio(distance_factor, contact_ratio, standard_ratio=0):
-    # Standard_ratio should be 1 if we want to subtract ideal polymer contact probability from calculation
-    strength = distance_factor * (contact_ratio - standard_ratio)
-    return strength
-
-
-# Interaction strength is proportional the the distance factor and the contact probability value
-def calculate_individual_strength_contact_probability(distance_factor, contact_value, standard_value=0):
-    # Standard_value should be calculated if we want to subtract ideal polymer contact probability from calculation
-    strength = distance_factor * (contact_value - standard_value)
-    return strength

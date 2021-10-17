@@ -24,6 +24,14 @@ def readsequence():
     x = len(seq)
     return seq, x
 
+def readsequence_single():
+    # Read protein sequences
+    seqopen = open('seq.txt', 'r')
+    seq = seqopen.read()
+    # Clean the sequence
+    while re.search('\s', seq[-1]) is not None:
+        seq = seq[:-1]
+    return seq
 
 # Automatically change folder and do analysis on every sub-folder
 def subdir(pwd, psi, h):

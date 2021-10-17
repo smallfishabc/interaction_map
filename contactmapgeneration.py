@@ -47,6 +47,7 @@ class Contactmap:
             self.contact = self.read_contact()
             # Read pair array from saved file
             self.pair = self.read_pair()
+
     # Define a function to calculate contact probability
     def compute_contact(self):
         # Calculate contact map using the MDtraj library. Cont stored the distance between two residues.
@@ -139,4 +140,11 @@ def generate_contactmap(protein_name, read_from_file=0, cutoff=0.8, workpath=0, 
     elif read_from_file == 1:
         contact = Contactmap(protein_name, cutoff, readfromfile=read_from_file)
     print('finished')
+    return contact
+
+
+# Generate contactmap for single trajectory file
+def generate_contactmap_single_traj(path, pdb_name, xtc_name):
+    traj, frames = loadtraj(0, pdbtype=pdb_name, stdoutput=0, traj_selection=0, switch=1, traj_name=xtc_name)
+    contact = Contactmap('single_traj', cutoff=0.8, traj=traj)
     return contact

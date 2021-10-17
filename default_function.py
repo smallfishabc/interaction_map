@@ -74,3 +74,15 @@ def interactionmap_pairwise_pre(name, proteinpath, psi, residue, read_from_file)
     contact = contactmapgeneration.generate_contactmap(name, read_from_file)
     # Free up memory space
     del contact
+# Interaction map generation main function for single trajectory
+def interactionmap_pairwise_single_traj(path,pdb_name,xtc_name,sequence):
+    #Change working directory to target directory
+    os.chdir(path)
+    #Calculate the contact map
+    contact = contactmapgeneration.generate_contactmap_single_traj(path,pdb_name,xtc_name)
+    #Calculate the interaction strength
+    interaction, raw_value = nl.normalization(contact.contact, contact.pair)
+    length=len(sequence)
+    print(contact)
+    figname=pdb_name.split('.')[0]
+    cm.interaction_map(sequence, length, interaction, raw_value, contact.pair, figname, contact.contact)
