@@ -106,7 +106,7 @@ def loadtraj(repeats, pdbtype='__START_0.pdb', stdoutput=0, traj_selection=0, sw
         t = md.load(traj_name, top=pdbtype)
     # Else, load multiple repeats from my simulation dataset.
     elif traj_selection is 0:
-        load_multiple_xtc(repeats, pdbtype)
+        t= load_multiple_xtc(repeats, pdbtype)
     else:
         for i in traj_selection:
             t = md.load('__traj_' + str(i) + '.xtc', top=pdbtype)
