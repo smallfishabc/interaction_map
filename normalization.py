@@ -109,11 +109,11 @@ def normalization(targetmap, pairs, a1=1.64, b1=-1.32):
         # Store the ratio into the array
         raw_value[index] = value
         # Based on the ratio, determine the interaction type and store in the array
-        if value > 1.5 and i > 0.001:
+        if value > 2 and i > 0.001:
             interaction[index] = 2
-        elif value > 0.5 and i > 0.001:
+        elif value > 1 and i > 0.001:
             interaction[index] = 1
-        elif value < -1.5 and i > 0.001:
+        elif value < -2 and i > 0.001:
             interaction[index] = -2
         elif value < -1 and i > 0.001:
             interaction[index] = -1
