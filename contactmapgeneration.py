@@ -115,6 +115,7 @@ def loadtraj(repeats, pdbtype='__START_0.pdb', stdoutput=0, traj_selection=0, sw
     r = t.atom_slice(u)
     # Get frame number of the trajectory file.
     jframe = t.n_frames
+    print(jframe)
     return r, jframe
 
 
