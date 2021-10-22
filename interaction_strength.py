@@ -62,9 +62,9 @@ def calculate_overall_strength(pairs, raw_value, interaction, contactmap, functi
             # probability and standard curve.
             value = raw_value[index]
             if value >= 0:
-                standard_ratio = 1
+                standard_value = 1
             elif value < 0:
-                standard_ratio = -1
+                standard_value = -1
         else:
             # Contact probability value.Standard ratio is calculated for prepare the difference between contact
             # probability and standard curve.
@@ -76,7 +76,7 @@ def calculate_overall_strength(pairs, raw_value, interaction, contactmap, functi
         # Based on the distance between residue pair, we will calculate the distance_factor
         distance_factor = factor(distance)
         # Based on the distance factor and the contact probability value, we can calculate the interaction strength
-        strength = function(distance_factor, value)
+        strength = function(distance_factor, value, standard_value)
         # Store the interaction strength into corresponding array
         full_strength[index] = strength
     # Overall strength is the sum over of the each individual interaction.
