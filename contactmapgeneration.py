@@ -56,7 +56,7 @@ class Contactmap:
         # Create a empty list for removing unnecessary pairs
         index_list = []
         for index, i in enumerate(pairs):
-            if (i[1] - i[0]) < 5:
+            if (i[1] - i[0]) < 3:
                 # Add unnecessary pair index into the list
                 index_list.append(index)
         # Remove the unnecessary pair
@@ -72,24 +72,24 @@ class Contactmap:
 
     # Define a function to store the average contact probability into file
     def read_contact(self):
-        a = np.loadtxt(str(self.name) + "contact_cutoff.csv", delimiter=',')
+        a = np.loadtxt(str(self.name) + "contact.csv", delimiter=',')
         return a
 
     # Define a function to store the residue pairs into file
     def read_pair(self):
-        a = np.loadtxt(str(self.name) + "pair_cutoff.csv", delimiter=',')
+        a = np.loadtxt(str(self.name) + "pair.csv", delimiter=',')
         return a
 
     # Define a function to read the average contact probability from file
     def save_contact(self):
         a = self.contact
-        np.savetxt(str(self.name) + "contact_cutoff.csv", a, delimiter=",")
+        np.savetxt(str(self.name) + "contact.csv", a, delimiter=",")
         return
 
     # Define a function to read the residue pairs from file
     def save_pair(self):
         a = self.pair
-        np.savetxt(str(self.name) + "pair_cutoff.csv", a, delimiter=",")
+        np.savetxt(str(self.name) + "pair.csv", a, delimiter=",")
         return
 
 
