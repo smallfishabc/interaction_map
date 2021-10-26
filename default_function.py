@@ -14,7 +14,7 @@ import readpath
 import contactmapcalculation as cc
 
 # Main function to generate interaction map and calculate the interaction strength
-def interactionmap_pairwise(name, proteinpath, psi, residue, read_from_file=0):
+def interactionmap_pairwise(name, proteinpath, psi, residue, read_from_file=0,att1_cutoff_input=1):
     # Print out the target protein and solution condition
     print(proteinpath, psi, residue,read_from_file)
     # Change dir to the target directory to read data and save analysis results
@@ -39,7 +39,7 @@ def interactionmap_pairwise(name, proteinpath, psi, residue, read_from_file=0):
         # Tracking the running status for debugging
         print('end1')
         # Calculate interaction type based on ideal polymer model
-        interaction, raw_value = nl.normalization(contact.contact, contact.pair)
+        interaction, raw_value = nl.normalization(contact.contact, contact.pair,att1_cutoff=att1_cutoff_input)
         print('end11')
         # Save the interaction map's raw value into the csv file for backuo
         np.savetxt("interaction.csv", interaction, delimiter=",")
@@ -75,13 +75,13 @@ def interactionmap_pairwise_pre(name, proteinpath, psi, residue, read_from_file)
     # Free up memory space
     del contact
 # Interaction map generation main function for single trajectory
-def interactionmap_pairwise_single_traj(path,pdb_name,xtc_name,sequence):
+def interactionmap_pairwise_single_traj(path,pdb_name,xtc_name,sequence,att1_cutoff_input=1):
     #Change working directory to target directory
     os.chdir(path)
     #Calculate the contact map
     contact = contactmapgeneration.generate_contactmap_single_traj(path,pdb_name,xtc_name)
     #Calculate the interaction strength
-    interaction, raw_value = nl.normalization(contact.contact, contact.pair)
+    interaction, raw_value = nl.normalization(contact.contact, contact.pair,att1_cutoff=att1_cutoff_input)
     length=len(sequence)
     print(contact)
     figname=pdb_name.split('.')[0]
