@@ -42,15 +42,13 @@ def interactionmap_pairwise(name, proteinpath, psi, residue, read_from_file=0,at
         interaction, raw_value = nl.normalization(contact.contact, contact.pair,att1_cutoff=att1_cutoff_input)
         print('end11')
         # Save the interaction map's raw value into the csv file for backuo
-        np.savetxt("interaction.csv", interaction, delimiter=",")
-        np.savetxt("raw_value.csv", raw_value, delimiter=",")
+        #np.savetxt("interaction.csv", interaction, delimiter=",")
+        #np.savetxt("raw_value.csv", raw_value, delimiter=",")
     # If we need to recalculate a existing IDP
     else:
         # load data from saved contact map data
         contact = contactmapgeneration.generate_contactmap(name, read_from_file)
-        # load the interaction map data from csv file
-        interaction = np.loadtxt("interaction.csv", delimiter=",")
-        raw_value = np.loadtxt("raw_value.csv", delimiter=",")
+        interaction, raw_value = nl.normalization(contact.contact, contact.pair, att1_cutoff=att1_cutoff_input)
     print('start2')
     # Calculate the interaction strength based on the raw value
     att1, att2, rep1, rep2 = cc.interaction_map_calc(seq, length, interaction, raw_value, contact.pair, 'contact_S_0',
