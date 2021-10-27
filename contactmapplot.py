@@ -146,5 +146,5 @@ def interaction_map(seq, length, interaction, raw_value, pairs, figname,targetma
     interaction_plotting(interaction, raw_value, pairs, layout, ax, 'rep', -1,targetmap)
     interaction_plotting(interaction, raw_value, pairs, layout, ax, 'rep', -2,targetmap)
     # Save and demonstrate the plot
-    plt.savefig(figname + '.png')
+    plt.savefig(figname + '.svg')
     plt.show()
