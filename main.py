@@ -14,7 +14,7 @@ def multi_trajectory_test(args):
     test = 1
     if args.protein_directory:
         path = args.protein_directory
-    elif test is 1:
+    elif test == 1:
         # path = 'F:\globus\simulation_sticker_spacer\F1_GS_40-summary'
         # path='F:\globus\simulation_contactmap_validation\GS44-summary'
         # path = 'F:\DATA_F\GSlinker\GS56-summary'
@@ -22,7 +22,7 @@ def multi_trajectory_test(args):
         path='/media/lemoncatboy/WD_BLACK/DATA_F/puma_scramble_new/puma123/puma_wildfull-summary'
     if args.name:
         name = args.name
-    elif single_traj is not 1:
+    elif single_traj != 1:
         try:
             name = path.split("\\")[-1].split("-")[0]
         except:
@@ -35,7 +35,7 @@ def multi_trajectory_test(args):
         residue = args.restype
     else:
         residue = 'BB'
-    if single_traj is not 1:
+    if single_traj != 1:
         # if test == 1:
         #     default_function.test_function(name,path,residue)
         # else:

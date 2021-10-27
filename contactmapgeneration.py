@@ -102,10 +102,10 @@ def loadtraj(repeats, pdbtype='__START_0.pdb', stdoutput=0, traj_selection=0, sw
     # if stdoutput is 1:
     #     tlist=[]
     # If the user only want to input individual pdb or trajectory file. Skip all other steps
-    if switch is 1:
+    if switch == 1:
         t = md.load(traj_name, top=pdbtype)
     # Else, load multiple repeats from my simulation dataset.
-    elif traj_selection is 0:
+    elif traj_selection == 0:
         t=load_multiple_xtc(repeats, pdbtype)
     else:
         for i in traj_selection:
@@ -122,9 +122,9 @@ def loadtraj(repeats, pdbtype='__START_0.pdb', stdoutput=0, traj_selection=0, sw
 # Designed for my multi repeat protein simulation data
 def load_multiple_xtc(repeats, pdbtype):
     # Load 3 or 5 individual trajectory repeats
-    if repeats is 5:
+    if repeats == 5:
         t = md.load({'__traj_0.xtc', '__traj_1.xtc', '__traj_2.xtc', '__traj_3.xtc', '__traj_4.xtc'}, top=pdbtype)
-    elif repeats is 3:
+    elif repeats == 3:
         try:
             t = md.load({'__traj_0.xtc', '__traj_1.xtc', '__traj_2.xtc'}, top=pdbtype)
         except:
