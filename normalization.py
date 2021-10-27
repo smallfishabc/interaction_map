@@ -86,7 +86,7 @@ def fitting_function(x, a, b):
     return a * x ** b
 
 # Use standard contact probability curve to calculate interaction strength
-def normalization(targetmap, pairs, a1=1.64, b1=-1.32, att1_cutoff=1):
+def normalization(targetmap, pairs, a1=1.64, b1=-1.32, att1_cutoff=1,rep1_cutoff=-1):
     # Create an empty array for calculating interaction.(Interaction is the binary value representing the interaction type
     # raw_value is the ratio between pairwise contact probability and standard curve)
     interaction = np.zeros(pairs.shape[0])
@@ -113,9 +113,9 @@ def normalization(targetmap, pairs, a1=1.64, b1=-1.32, att1_cutoff=1):
             interaction[index] = 2
         elif value > att1_cutoff and i > 0.001:
             interaction[index] = 1
-        elif value < -2 and i > 0.001:
+        elif value < -4 and i > 0.001:
             interaction[index] = -2
-        elif value < -1 and i > 0.001:
+        elif value < rep1_cutoff and i > 0.001:
             interaction[index] = -1
         # print(pairs[index], value, i, adjustment)
     return interaction, raw_value
