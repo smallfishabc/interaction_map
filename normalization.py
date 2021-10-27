@@ -28,9 +28,9 @@ class Chunk:
 
     def generate_residue_list(self, position):
         residue_list = []
-        if position is 'left':
+        if position == 'left':
             i = self.left_residue
-        if position is 'right':
+        if position == 'right':
             i = self.right_residue
         k = 0
         size = (self.chunk_size - 1) / 2

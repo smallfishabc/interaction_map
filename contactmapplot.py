@@ -56,12 +56,12 @@ def color_text(pos, index, colorselec, seq, ax):
         label,
         color=colorselec,
         transform=ax.transData,
-        clip_on=True, fontfamily='monospace'
+        clip_on=True, fontfamily='monospace',fontsize=20
     )
 
 
 # Color coding the residue based on the position matrix and sequence color code.
-def create_color_coding(seq, graphg, pos, negacharged, posicharged, aromatic, figuresize=(10, 10), nodesize=0.1):
+def create_color_coding(seq, graphg, pos, negacharged, posicharged, aromatic, figuresize=(30, 30), nodesize=0.1):
     fig = plt.figure(figsize=figuresize)
     ax = fig.add_subplot(111)
     seqdict = {}
@@ -146,5 +146,5 @@ def interaction_map(seq, length, interaction, raw_value, pairs, figname,targetma
     interaction_plotting(interaction, raw_value, pairs, layout, ax, 'rep', -1,targetmap)
     interaction_plotting(interaction, raw_value, pairs, layout, ax, 'rep', -2,targetmap)
     # Save and demonstrate the plot
-    plt.savefig(figname + '.png')
+    plt.savefig(figname + '.svg')
     plt.show()
