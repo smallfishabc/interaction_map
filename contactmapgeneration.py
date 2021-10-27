@@ -76,14 +76,14 @@ class Contactmap:
 def loadtraj(repeats, pdbtype='__START_0.pdb', stdoutput=0, traj_selection=0, switch=0, traj_name=0):
     # if stdoutput is 1:
     #     tlist=[]
-    if switch is 1:
+    if switch == 1:
         t = md.load(traj_name, top=pdbtype)
-    elif traj_selection is 0:
+    elif traj_selection == 0:
     # Need further modification
     #    for i in range(repeats):
-        if repeats is 5:
+        if repeats == 5:
             t = md.load({'__traj_0.xtc','__traj_1.xtc','__traj_2.xtc','__traj_3.xtc','__traj_4.xtc'},top=pdbtype)
-        elif repeats is 3:
+        elif repeats == 3:
             t = md.load({'__traj_0.xtc','__traj_1.xtc','__traj_2.xtc'},top=pdbtype)
             # t = md.load('__traj_' + str(i) + '.xtc', top=pdbtype)
             # if stdoutput is 1:
