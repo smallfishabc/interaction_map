@@ -2,7 +2,7 @@ import os
 import numpy as np
 import mdtraj as md
 import contactmapgeneration as cg
-
+import mdtraj_function as mf
 # This module will pick interested frames from my simulation trajectory.
 # The standard may be based on interaction or residual structure.
 
@@ -22,7 +22,7 @@ def select_conformation_index_interaction(target_pair,contact_map, pair_index):
     # loop over the contact_map
     for index, i in enumerate(contact_map):
         # If the contact between target_pair exist
-        print(i[index_wanted] == True)
+        #print(i[index_wanted] == True)
         if i[index_wanted] == True:
             # Attach the contact to the final list
             index_list.append(index)
@@ -33,7 +33,7 @@ def frame_selection(index_list, trajectory_object):
     # We'd better pass a object using the load traj function
     target_traj=trajectory_object.slice(index_list)
     # Optional: Save the new traj to a separate pdb file
-    target_traj.save_pdb('test.pdb')
+    target_traj.save_xtc('test.xtc')
     return target_traj
 
 # Based on previous function. Systematically ser
@@ -42,12 +42,14 @@ if __name__ == "__main__":
     # test purpose only
     target_directory = '/media/lemoncatboy/WD_BLACK/DATA_F/puma_scramble_new/puma123/puma_wildfull-summary/BB/S_0'
     os.chdir(target_directory)
-    traj = md.load('__traj_0.xtc', top='__START_0.pdb')
+    print('start')
+    traj = md.load({'__traj_0.xtc', '__traj_1.xtc', '__traj_2.xtc', '__traj_3.xtc', '__traj_4.xtc'}, top='__START_0.pdb')
     # Select the protein from the pdb file
     u = traj.top.select('protein')
     r = traj.atom_slice(u)
     # Get frame number of the trajectory file.
     jframe = traj.n_frames
+    print('end')
     cutoff = 0.8
     [cont, pairs] = md.compute_contacts(traj, contacts='all', scheme='CA', ignore_nonprotein=True)
     contact = (cont < cutoff)
@@ -55,6 +57,23 @@ if __name__ == "__main__":
     target_traj=frame_selection(index_list=a,trajectory_object=traj)
     target_u = target_traj.top.select('protein')
     target_r = target_traj.atom_slice(u)
+    target_jframe = target_traj.n_frames
     rg=md.compute_rg(target_r).mean()
     rg_standard=md.compute_rg(r).mean()
-    print(rg,rg_standard)
+    re=mf.calc_Re(target_r,target_traj)
+    re_standard=mf.calc_Re(r,traj)
+    helicity=mf.calc_Heli(target_traj)
+    helicity_standard=mf.calc_Heli(traj)
+    HB=mf.calc_HB(target_r,target_jframe)
+    HB_standard=mf.calc_HB(r,jframe)
+    print('Number of frames of selected trajectory: ',target_jframe)
+    print('Number of frames of full trajectory: ', jframe)
+    print('Radius of Gyration(nm) of selected trajectory:   ',rg)
+    print('Radius of Gyration(nm) of full trajectory:   ',rg_standard)
+    print('End to End Distance(nm) of selected trajectory:   ',re)
+    print('End to End Distance(nm) of full trajectory:   ',re_standard)
+    print('Helicity of selected trajectory:   ',helicity)
+    print('Helicity of full trajectory:   ',helicity_standard)
+    print('Hydrogen bonds per residue of selected trajectory:   ',HB)
+    print('Hydrogen bonds per residue of full trajectory:   ',HB_standard)
+
