@@ -49,11 +49,12 @@ def interactionmap_pairwise(name, proteinpath, psi, residue, read_from_file=0):
         # load data from saved contact map data
         contact = contactmapgeneration.generate_contactmap(name, read_from_file)
         # load the interaction map data from csv file
-        interaction = np.loadtxt("interaction.csv", delimiter=",")
-        raw_value = np.loadtxt("raw_value.csv", delimiter=",")
+        interaction, raw_value = nl.normalization(contact.contact, contact.pair)
     print('start2')
     # Calculate the interaction strength based on the raw value
     att1, att2, rep1, rep2 = cc.interaction_map_calc(seq, length, interaction, raw_value, contact.pair, 'contact_S_0',
+                                                     contact.contact)
+    cm.interaction_map(seq, length, interaction, raw_value, contact.pair, 'contact_S_0',
                                                      contact.contact)
     print('end2')
     # Return the overall interaction strength

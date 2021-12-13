@@ -98,7 +98,7 @@ def interaction_plotting(interaction, raw_value, pairs, layout, ax, intertype, s
             colorset = 'green'
             connect = "arc3,rad=-0.5"
         if inot == 1:
-            colorset = 'lightblue'
+            colorset = 'lightgreen'
             connect = "arc3,rad=-0.5"
     elif intertype == 'rep':
         if inot == -2:

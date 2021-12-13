@@ -16,10 +16,11 @@ def multi_trajectory_test(args):
         path = args.protein_directory
     elif test is 1:
         # path = 'F:\globus\simulation_sticker_spacer\F1_GS_40-summary'
-        # path='F:\globus\simulation_contactmap_validation\GS44-summary'
+        # path='F:\globus\simulation_contactmap_validation\GS18-summary'
         # path = 'F:\DATA_F\GSlinker\GS56-summary'
-        # path = 'F:\DATA_F\puma_scramble_new\puma123\puma_scramble_3-summary'
-        path='/media/lemoncatboy/WD_BLACK/DATA_F/puma_scramble_new/puma123/puma_wildfull-summary'
+        path = 'F:\DATA_F\puma_scramble_new\Mutation\PUMAWT_13toE-summary'
+        #path = 'F:\DATA_F\puma_scramble_new\puma_scrammble_sum\puma_wildfull-summary'
+        #path='/media/lemoncatboy/WD_BLACK/DATA_F/puma_scramble_new/puma123/puma_wildfull-summary'
     if args.name:
         name = args.name
     elif single_traj is not 1:
@@ -59,12 +60,13 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     single_traj = args.single_traj
+    single_traj = 0
     if single_traj==1 :
         path = args.protein_directory
         pdb_name=args.pdb
         xtc_name=args.xtc
-        sequence=readpath.readsequence_single()
         os.chdir(path)
+        sequence = readpath.readsequence_single()
         default_function.interactionmap_pairwise_single_traj(path,pdb_name,xtc_name,sequence)
     else:
         multi_trajectory_test(args)

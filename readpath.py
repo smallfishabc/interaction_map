@@ -26,6 +26,7 @@ def readsequence():
 
 def readsequence_single():
     # Read protein sequences
+    print(os.getcwd())
     seqopen = open('seq.txt', 'r')
     seq = seqopen.read()
     # Clean the sequence

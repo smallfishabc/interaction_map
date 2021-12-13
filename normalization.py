@@ -45,9 +45,9 @@ class Chunk:
         # Create a empty residue list
         residue_list = []
         # Select the center residue based on the position
-        if position is 'left':
+        if position == 'left':
             i = self.left_residue
-        if position is 'right':
+        if position == 'right':
             i = self.right_residue
         # Calculate the half size of the chunk
         size = (self.chunk_size - 1) / 2
@@ -113,9 +113,9 @@ def normalization(targetmap, pairs, a1=1.64, b1=-1.32):
             interaction[index] = 2
         elif value > 0.5 and i > 0.001:
             interaction[index] = 1
-        elif value < -1.5 and i > 0.001:
+        elif value < -2 and i > 0.01:
             interaction[index] = -2
-        elif value < -1 and i > 0.001:
+        elif value < -1 and i > 0.01:
             interaction[index] = -1
         # print(pairs[index], value, i, adjustment)
     return interaction, raw_value
