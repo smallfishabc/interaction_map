@@ -3,6 +3,7 @@ import numpy as np
 import mdtraj as md
 import contactmapgeneration as cg
 import mdtraj_function as mf
+import create_standard as cs
 # This module will pick interested frames from my simulation trajectory.
 # The standard may be based on interaction or residual structure.
 
@@ -39,6 +40,33 @@ def frame_selection(index_list, trajectory_object):
 # Based on previous function. Systematically ser
 
 if __name__ == "__main__":
+    target_directory = '/media/lemoncatboy/WD_BLACK/DATA_F/puma_scramble_new/puma123/puma_wildfull-summary/BB/S_0'
+    os.chdir(target_directory)
+    repeats=5
+    # This part will be needed if the second part is removed
+    read_from_file=1
+    name='puma_wildfull'
+
+    traj = cg.load_multiple_xtc(repeats, pdbtype='__START_0.pdb')
+    s_dict=cs.compute_property(traj)
+    cs.write_s_file(s_dict)
+    # Can be saved to a individual function and removed
+    u = traj.top.select('protein')
+    r = traj.atom_slice(u)
+    # Get frame number of the trajectory file.
+    jframe = traj.n_frames
+    print('end')
+    cutoff = 0.8
+    [cont, pairs] = md.compute_contacts(traj, contacts='all', scheme='CA', ignore_nonprotein=True)
+    contact = (cont < cutoff)
+    # Remove end
+    select_list=select_conformation_index_interaction([13,23],contact,pairs)
+    target_traj=frame_selection(index_list=select_list,trajectory_object=traj)
+    m_dict=cs.compute_property(target_traj)
+    if cs.check_directory(target_directory):
+        pass
+    print(m_dict)
+'''
     # test purpose only
     target_directory = '/media/lemoncatboy/WD_BLACK/DATA_F/puma_scramble_new/puma123/puma_wildfull-summary/BB/S_0'
     os.chdir(target_directory)
@@ -76,4 +104,4 @@ if __name__ == "__main__":
     print('Helicity of full trajectory:   ',helicity_standard)
     print('Hydrogen bonds per residue of selected trajectory:   ',HB)
     print('Hydrogen bonds per residue of full trajectory:   ',HB_standard)
-
+'''
