@@ -19,7 +19,7 @@ def multi_trajectory_test(args):
         # path='F:\globus\simulation_contactmap_validation\GS44-summary'
         # path = 'F:\DATA_F\GSlinker\GS56-summary'
         # path = 'F:\DATA_F\puma_scramble_new\puma123\puma_scramble_3-summary'
-        path='/media/lemoncatboy/WD_BLACK/DATA_F/puma_scramble_new/puma123/puma_wildfull-summary'
+        path='/media/lemoncatboy/WD_BLACK/DATA_F/puma_scramble_new/Mutation/PUMAWT_13toS_23toS-summary'
     if args.name:
         name = args.name
     elif single_traj is not 1:
@@ -58,7 +58,7 @@ if __name__ == "__main__":
     parser.add_argument("--psi", "-psi", help="Psi value of transfer free energy(test_function)")
 
     args = parser.parse_args()
-    single_traj =0
+    single_traj =1
     if single_traj==1 :
         path = args.protein_directory
         pdb_name=args.pdb

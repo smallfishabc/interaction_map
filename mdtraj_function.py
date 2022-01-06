@@ -1,7 +1,9 @@
 import mdtraj as md
 import statistics as st
 import numpy as np
-# Serveral customized function for conformational property calculation.
+# Several customized function for conformational property calculation.
+# Here the x is the length of the sequence.
+# Here the r is the selected trajectory, t is the raw trajectory and j is the frame number.
 x=34
 def calc_HB(r,j):
     hbo=md.wernet_nilsson(r)
