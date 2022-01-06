@@ -56,7 +56,7 @@ class Contactmap:
         # Create a empty list for removing unnecessary pairs
         index_list = []
         for index, i in enumerate(pairs):
-            if (i[1] - i[0]) < 5:
+            if (i[1] - i[0]) < 3:
                 # Add unnecessary pair index into the list
                 index_list.append(index)
         # Remove the unnecessary pair

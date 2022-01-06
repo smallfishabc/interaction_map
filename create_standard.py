@@ -57,10 +57,12 @@ def compare_s_file(m_dict):
     # Read
     standard_df=pd.read_csv('map_std_wt.csv',names=['name','value'])
     standard_df['change']=np.nan
-    for key,value in m_dict:
+    for key,value in m_dict.items():
         value_s=standard_df.loc[standard_df['name']==key,'value']
-        change=abs(value-value_s)/value_s
-        standard_df.loc[standard_df['name']==key,'change']=change
+        v_change=abs(value-value_s)
+        p_change=abs(value-value_s)/value_s
+        standard_df.loc[standard_df['name']==key,'percentage_change']=p_change
+        standard_df.loc[standard_df['name'] == key, 'value_change'] = v_change
     standard_df.drop(columns=['value'])
     return standard_df
 

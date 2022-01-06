@@ -55,6 +55,7 @@ def interactionmap_pairwise(name, proteinpath, psi, residue, read_from_file=0):
     # Calculate the interaction strength based on the raw value
     att1, att2, rep1, rep2 = cc.interaction_map_calc(seq, length, interaction, raw_value, contact.pair, 'contact_S_0',
                                                      contact.contact)
+    cm.interaction_map(seq, length, interaction, raw_value, contact.pair, 'figname', contact.contact)
     print('end2')
     # Return the overall interaction strength
     return att1, att2, rep1, rep2

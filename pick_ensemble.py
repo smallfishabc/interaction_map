@@ -4,6 +4,7 @@ import mdtraj as md
 import contactmapgeneration as cg
 import mdtraj_function as mf
 import create_standard as cs
+import pandas as pd
 # This module will pick interested frames from my simulation trajectory.
 # The standard may be based on interaction or residual structure.
 
@@ -37,7 +38,19 @@ def frame_selection(index_list, trajectory_object):
     target_traj.save_xtc('test.xtc')
     return target_traj
 
-# Based on previous function. Systematically ser
+def comparison(target_pair,traj,contact,pairs,limit):
+    select_list=select_conformation_index_interaction(target_pair,contact,pairs)
+    if len(select_list)<limit:
+        return (0,0,0)
+    target_traj=frame_selection(index_list=select_list,trajectory_object=traj)
+    m_dict=cs.compute_property(target_traj)
+    frame_number=m_dict['Frame_number']
+    compare_result = cs.compare_s_file(m_dict)
+    ree_change=compare_result.loc[compare_result['name']=='End_to_end_distance(nm)','value_change'].iloc[0]
+    helicity_change=compare_result.loc[compare_result['name']=='Helicity','value_change'].iloc[0]
+    return frame_number,ree_change,helicity_change
+
+# Based on previous function. Systematically quantify how interaction influence the ensemble property
 
 if __name__ == "__main__":
     target_directory = '/media/lemoncatboy/WD_BLACK/DATA_F/puma_scramble_new/puma123/puma_wildfull-summary/BB/S_0'
@@ -60,12 +73,33 @@ if __name__ == "__main__":
     [cont, pairs] = md.compute_contacts(traj, contacts='all', scheme='CA', ignore_nonprotein=True)
     contact = (cont < cutoff)
     # Remove end
-    select_list=select_conformation_index_interaction([13,23],contact,pairs)
-    target_traj=frame_selection(index_list=select_list,trajectory_object=traj)
-    m_dict=cs.compute_property(target_traj)
-    if cs.check_directory(target_directory):
-        pass
-    print(m_dict)
+    df=pd.read_csv('att1interaction_pair.csv', sep=',',header=None)
+    df2=pd.read_csv('att2interaction_pair.csv',sep=',',header=None)
+    test=df.values.tolist()+df2.values.tolist()
+    if not cs.check_directory(target_directory):
+        raise Exception('Wrong_location')
+    result_value=pd.DataFrame(columns=['interaction_pair','frame_number','ree_change','helicity_change','ree_weighted','helicity_weighted'])
+    for i in test:
+        if i[1]-i[0]<=5:
+            continue
+        frame_number,ree_change,helicity_change=comparison(i,traj,contact,pairs,limit=1400)
+        if frame_number==0:
+            continue
+        ree_weighted=frame_number*ree_change
+        helicity_weighted=frame_number*helicity_change
+        result_value=result_value.append({'interaction_pair':str(i[0])+'_'+str(i[1]),
+                             'frame_number':frame_number,
+                             'ree_change':ree_change,
+                             'helicity_change':helicity_change},ignore_index=True)
+    result_value.to_csv('mutation.csv',index=False)
+
+    # select_list=select_conformation_index_interaction([13,23],contact,pairs)
+    # target_traj=frame_selection(index_list=select_list,trajectory_object=traj)
+    # m_dict=cs.compute_property(target_traj)
+    # compare_result=cs.compare_s_file(m_dict)
+    # if cs.check_directory(target_directory):
+    #     pass
+    # print(compare_result)
 '''
     # test purpose only
     target_directory = '/media/lemoncatboy/WD_BLACK/DATA_F/puma_scramble_new/puma123/puma_wildfull-summary/BB/S_0'
