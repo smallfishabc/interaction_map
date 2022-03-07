@@ -81,11 +81,12 @@ class Chunk:
         average = np.log(np.average(self.interact_list))
         return average
 
-# fitting function of standard contact probability map. Reference
+# Fitting function of standard contact probability map.
+#  A simple exponential function
 def fitting_function(x, a, b):
     return a * x ** b
 
-# Use standard contact probability curve to calculate interaction strength
+# Use standard contact probability curve to calculate interaction strength (Key algorithm of my script)
 def normalization(targetmap, pairs, a1=1.64, b1=-1.32):
     # Create an empty array for calculating interaction.(Interaction is the binary value representing the interaction type
     # raw_value is the ratio between pairwise contact probability and standard curve)

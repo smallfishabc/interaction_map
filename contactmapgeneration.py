@@ -2,14 +2,16 @@
 """
 Created on Mon Jul  5 18:23:10 2021
 
+   File Description:
+   ================
+    Define the contact map class,
+
 @author: ShaharGroup-fyu
 """
 # Optional module
 import os
-
 import mdtraj as md
 import numpy as np
-
 
 # We need to first load a trajectory file to use Contact map class
 # Containing contact map and the pairwise information. Will be saved to csv file
