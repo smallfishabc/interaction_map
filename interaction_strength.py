@@ -49,11 +49,11 @@ def calculate_individual_strength_contact_probability(distance_factor, contact_v
 
 # This function is designed to directly calculate the overall interaction strength based on data in the interaction
 # plot function.
-def calculate_overall_strength(pairs, raw_value, interaction, contactmap, function=calculate_individual_strength_none, factor=distance_factor_none):
+def calculate_overall_strength(interaction, intertype, function=calculate_individual_strength_none, factor=distance_factor_none):
     # Create an empty numpy array for interaction strength calculation
-    full_strength = np.zeros(pairs.shape[0])
+    full_strength = np.zeros(len(interaction))
     # Retrieve contact probability and calculate interaction strength for every residue pairs.
-    for index, edge in enumerate(pairs):
+    for i in range(len(interaction)):
         # Calculate the distance between two residue
         distance = edge[1] - edge[0]
         # Determine which function and algorithm to be used based on the input

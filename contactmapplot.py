@@ -13,22 +13,33 @@ import networkx as nx
 # Create the networkx graph
 #### problem need to be solved: width of the graph
 import interaction_strength
-
+##Check this with the latest graphx library
 # Create a  networkx graph object
 def create_network(seq, length, size=10):
+    '''
+
+    :param seq:
+    :param length:
+    :param size:
+    :return:
+    '''
     graphg = nx.MultiDiGraph()
     # Add residue node to network graphics
     i = 1
     while i < (length + 1):
         graphg.add_node(i, residue=seq[i - 1], pos=(i, size))
         i += 1
-
     return graphg
 
 
 # To help us identify different amino acid. We color code negative charged residues , positive
 # charged residues and aromatic residues with different colors.
 def seq_color(seq):
+    '''
+
+    :param seq:
+    :return:
+    '''
     # Create empty list
     negacharged = []
     posicharged = []
@@ -46,6 +57,11 @@ def seq_color(seq):
 
 # Produce position matrix and layout.
 def create_position(graphg):
+    '''
+
+    :param graphg:
+    :return:
+    '''
     # Get the position and the layout for the networkx nodes
     pos = nx.get_node_attributes(graphg, 'pos')
     layout = dict((n, graphg.node[n]["pos"]) for n in graphg.nodes())
@@ -54,6 +70,15 @@ def create_position(graphg):
 
 # Plot function of sequence color coding
 def color_text(pos, index, colorselec, seq, ax):
+    '''
+
+    :param pos:
+    :param index:
+    :param colorselec:
+    :param seq:
+    :param ax:
+    :return:
+    '''
     # Get the position of each residue
     (x, y) = pos[index + 1]
     # Get the name of each residue
@@ -71,6 +96,18 @@ def color_text(pos, index, colorselec, seq, ax):
 
 # Color coding the residue based on the position matrix and sequence color code.
 def create_color_coding(seq, graphg, pos, negacharged, posicharged, aromatic, figuresize=(10, 10), nodesize=0.1):
+    '''
+
+    :param seq:
+    :param graphg:
+    :param pos:
+    :param negacharged:
+    :param posicharged:
+    :param aromatic:
+    :param figuresize:
+    :param nodesize:
+    :return:
+    '''
     fig = plt.figure(figsize=figuresize)
     ax = fig.add_subplot(111)
     seqdict = {}
@@ -91,54 +128,55 @@ def create_color_coding(seq, graphg, pos, negacharged, posicharged, aromatic, fi
 
 
 # Plot selected interaction line
-def interaction_plotting(interaction, raw_value, pairs, layout, ax, intertype, strength, targetmap):
-    inot = strength  # default
-    if intertype == 'att':
-        if inot == 2:
-            colorset = 'green'
-            connect = "arc3,rad=-0.5"
-        if inot == 1:
-            colorset = 'lightgreen'
-            connect = "arc3,rad=-0.5"
-    elif intertype == 'rep':
-        if inot == -2:
-            colorset = 'red'
-            connect = "arc3,rad=0.5"
-        if inot == -1:
-            colorset = 'orange'
-            connect = "arc3,rad=0.5"
-    # Remove unnecessary pairs
-    indexlist = []
-    for index, i in enumerate(interaction):
-        if i != inot:
-            indexlist.append(index)
-    pairsnew = np.delete(pairs, indexlist, axis=0)
-    reaction_value = np.delete(interaction, indexlist, axis=0)
-    raw_value_new = np.delete(raw_value, indexlist, axis=0)
-    target_new = np.delete(targetmap, indexlist, axis=0)
-    # During the debug process, we only consider the condition when inot>0.
-    if inot > 0:
-        full_strength, overall_strength = interaction_strength.calculate_overall_strength(pairsnew, raw_value,interaction, target_new)
+def interaction_plotting(interaction, layout, ax, inter_type):
+    '''
+
+    :param interaction:
+    :param layout:
+    :param ax:
+    :param intertype:
+    :param plot_c:
+    :return:
+    '''
+    if inter_type == 2:
+        colorset = 'green'
+        connect = "arc3,rad=-0.5"
+    if inter_type == 1:
+        colorset = 'lightgreen'
+        connect = "arc3,rad=-0.5"
+    if inter_type == -2:
+        colorset = 'red'
+        connect = "arc3,rad=0.5"
+    if inter_type == -1:
+        colorset = 'orange'
+        connect = "arc3,rad=0.5"
+    # During the debug process, we only consider the condition when plot_c>0.
+    if inter_type > 0:
+        #full_strength, overall_strength = interaction_strength.calculate_overall_strength(interaction, inter_type)
+        full_strength = []
+        overall_strength = 1
     else:
         full_strength = []
         overall_strength = -1
-    np.savetxt(intertype + str(inot) + 'interaction_pair.csv', pairsnew, delimiter=',')
-    # I save two text file for testing
-    np.savetxt(intertype + str(inot) + 'full_strength.csv', full_strength, delimiter=',')
-    for index, edge in enumerate(pairsnew):
-        if inot > 0:
+    for index, data in interaction[interaction['plot_value']==inter_type].iterrows():
+        print(data)
+        strength=data['relative_strength']
+        distance = data['distance']
+        r1 = data['r_1']
+        r2 = data['r_2']
+        if inter_type > 0:
             #    linewidth = raw_value_new[index]
-            linewidth = 2 * target_new[index] * inot
-            distance = edge[1] - edge[0]
+            linewidth = 2 * data['relative_strength'] * inter_type
+            distance = data['distance']
             print(linewidth)
         else:
             #    linewidth = -1 * raw_value_new[index]
-            linewidth = -2 * target_new[index] * inot
+            linewidth = -2 * data['relative_strength'] * inter_type * 0.1
         # Adjust location to improve visualization effect
-        a = layout[edge[0]][0] - 0.2
-        b = layout[edge[0]][1]
-        c = layout[edge[1]][0] + 0.2
-        d = layout[edge[1]][1]
+        a = layout[r1][0] - 0.2
+        b = layout[r1][1]
+        c = layout[r2][0] + 0.2
+        d = layout[r2][1]
         # Plot Interaction between pairs
         ax.annotate("",
                     xy=(a, b),
@@ -150,8 +188,7 @@ def interaction_plotting(interaction, raw_value, pairs, layout, ax, intertype, s
                                     ), )
     return overall_strength
 
-
-def interaction_map(seq, length, interaction, raw_value, pairs, figname, targetmap):
+def interaction_map(seq, length, interaction, figname):
     # Create network object
     graphg = create_network(seq, length)
     # Obtain position list
@@ -160,16 +197,16 @@ def interaction_map(seq, length, interaction, raw_value, pairs, figname, targetm
     (negacharged, posicharged, aromatic) = seq_color(seq)
     (fig, ax) = create_color_coding(seq, graphg, pos, negacharged, posicharged, aromatic)
     # Plot interaction between each residue
-    att1 = interaction_plotting(interaction, raw_value, pairs, layout, ax, 'att', 1, targetmap)
-    att2 = interaction_plotting(interaction, raw_value, pairs, layout, ax, 'att', 2, targetmap)
-    rep1 = interaction_plotting(interaction, raw_value, pairs, layout, ax, 'rep', -1, targetmap)
-    rep2 = interaction_plotting(interaction, raw_value, pairs, layout, ax, 'rep', -2, targetmap)
+    att1 = interaction_plotting(interaction, layout, ax,  1)
+    att2 = interaction_plotting(interaction, layout, ax,  2)
+    rep1 = interaction_plotting(interaction, layout, ax, -1)
+    rep2 = interaction_plotting(interaction, layout, ax,  -2)
     graphg.add_edge(1, 5)
     # Save the plot to png file
     plt.savefig(figname + '.png')
+    plt.savefig(figname + '.svg')
     # Show the plot
     plt.show()
     # Return the interaction strength
-    return (att1, att2, rep1, rep2)
 
 

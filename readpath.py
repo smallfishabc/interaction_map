@@ -13,16 +13,15 @@ def getcurrentpath():
     return pwd
 
 # Read the fasta file , clean the sequence, and measure the sequence length
-def readsequence():
+def readsequence(_traj_path):
     # Read protein sequences
-    seqopen = open('seq.fasta', 'r')
+    seqopen = open(os.path.join(_traj_path,'seq.fasta'), 'r')
     seq = seqopen.read()
     # Clean the sequence
     while re.search('\s', seq[-1]) is not None:
         seq = seq[:-1]
     # Measure sequence length
-    x = len(seq)
-    return seq, x
+    return seq
 
 def readsequence_single():
     # Read protein sequences

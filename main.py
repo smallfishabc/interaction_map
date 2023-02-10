@@ -19,7 +19,8 @@ def multi_trajectory_test(args):
         # path='F:\globus\simulation_contactmap_validation\GS18-summary'
         # path = 'F:\DATA_F\GSlinker\GS56-summary'
         # path = 'F:\DATA_F\PDBsumreal_0814\p53_new-summary'
-        path = 'F:\DATA_F\contact_mutation\p53_W53G-summary'
+        #path = 'F:\DATA_F\contact_mutation\p53_W53G-summary'
+        path = r'F:\DATA_F\All_analysis_test_github'
         #path = 'F:\DATA_F\puma_scramble_new\puma_scrammble_sum\puma_wildfull-summary'
         #path='/media/lemoncatboy/WD_BLACK/DATA_F/puma_scramble_new/puma123/puma_wildfull-summary'
     if args.name:
@@ -37,11 +38,16 @@ def multi_trajectory_test(args):
         residue = args.restype
     else:
         residue = 'BB'
+    if args.repeat:
+        repeat=args.repeat
+    else:
+        repeat=5
     if single_traj != 1:
         # if test == 1:
         #     default_function.test_function(name,path,residue)
         # else:
-        default_function.interactionmap_pairwise(name, path, psi, residue)
+        traj_p, seq= default_function.multi_traj_pre(name, path, psi, residue)
+        default_function.interaction_map_pairwise(name, traj_p, seq, traj_p, repeat, read_from_file=False)
     # elif single_traj is 1:
     #     default_function.single_traj_contactmap()
 

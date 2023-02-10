@@ -3,7 +3,6 @@ import contactmapplot
 import default_function
 import interaction_strength
 import main
-import new_standard_fitting
 import readpath
 import showoff
 import normalization
