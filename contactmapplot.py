@@ -159,7 +159,6 @@ def interaction_plotting(interaction, layout, ax, inter_type):
         full_strength = []
         overall_strength = -1
     for index, data in interaction[interaction['plot_value']==inter_type].iterrows():
-        print(data)
         strength=data['relative_strength']
         distance = data['distance']
         r1 = data['r_1']
@@ -168,7 +167,6 @@ def interaction_plotting(interaction, layout, ax, inter_type):
             #    linewidth = raw_value_new[index]
             linewidth = 2 * data['relative_strength'] * inter_type
             distance = data['distance']
-            print(linewidth)
         else:
             #    linewidth = -1 * raw_value_new[index]
             linewidth = -2 * data['relative_strength'] * inter_type * 0.1
