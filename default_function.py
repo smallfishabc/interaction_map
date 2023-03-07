@@ -7,8 +7,8 @@ Created on Mon Aug  9 12:36:23 2021
 
 import os
 import numpy as np
-import contactmapgeneration
-import contactmapplot as cm
+import contact_map_generation
+import interaction_plot as cm
 import normalization as nl
 import readpath
 # This one is designed for multiple trajctory.

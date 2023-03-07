@@ -1,9 +1,9 @@
-import contactmapgeneration
-import contactmapplot
+import contact_map_generation
+import interaction_plot
 import default_function
 import interaction_strength
 import main
 import readpath
 import showoff
 import normalization
-import newscripttest
+import search_chunk
