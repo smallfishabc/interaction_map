@@ -10,7 +10,7 @@ import contact_map_generation as cg
 import interaction_plot as ip
 import normalization as nl
 import readpath
-
+import search_chunk as sc
 
 # This one is designed for multiple trajectory.
 # It will be removed for the final publication
@@ -61,3 +61,13 @@ def interaction_map_pairwise(name, traj_path, sequence, output_dir, pdb_top='__S
     ip.interaction_map(seq, length, interaction, name)
     # Return the overall interaction strength
     return interaction
+
+# We may need to change the read_from_file option
+def search_interaction(name, r1, r2, traj_path, sequence, output_dir, pdb_top='__START_0.pdb', xtc_input=5, read_from_file=False):
+    traj, sliced_traj, frames = cg.load_traj_protein(pdb_top,xtc_input)
+    selected_frames=sc.inter_frames(r1,r2,traj)
+    contact,contact_non=sc.new_interaction_map(name,traj,selected_frames)
+    interaction = nl.normalization(contact.contact)
+    interaction_non = nl.normalization(contact_non.contact)
+    ip.interaction_map(sequence, len(sequence), interaction, name)
+

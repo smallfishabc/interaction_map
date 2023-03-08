@@ -10,6 +10,7 @@ import readpath
 import showoff
 import default_function
 
+
 def multi_trajectory_test(args):
     test = 1
     if args.protein_directory:
@@ -72,15 +73,21 @@ if __name__ == "__main__":
     args = parser.parse_args()
     single_traj = args.single_traj
     single_traj = 0
-    if single_traj==1 :
-        map_name=args.name
-        path = args.protein_directory
-        pdb_name=args.pdb
-        xtc_name=args.xtc
-        sequence = readpath.readsequence_single()
-        default_function.interaction_map_pairwise(map_name,path,sequence,path,pdb_name,xtc_name)
+    search=args.search
+    if search:
+        r1=args.r1
+        r2=args.r2
+
     else:
-        multi_trajectory_test(args)
+        if single_traj:
+            map_name=args.name
+            path = args.protein_directory
+            pdb_name=args.pdb
+            xtc_name=args.xtc
+            sequence = readpath.readsequence_single()
+            default_function.interaction_map_pairwise(map_name,path,sequence,path,pdb_name,xtc_name)
+        else:
+            multi_trajectory_test(args)
     # For multi trajectory analysis. Internal test only
 
 

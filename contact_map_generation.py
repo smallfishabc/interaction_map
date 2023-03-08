@@ -87,7 +87,7 @@ def load_traj_protein(pdb_top='__START_0.pdb', xtc_input='__traj_0.xtc'):
     u = t.top.select('protein')
     r = t.atom_slice(u)
     # Get frame number of the trajectory file.
-    return r, r.n_frames
+    return t, r, r.n_frames
 
 
 # input a xtc list to load 1 or more xtc files
@@ -117,7 +117,7 @@ def generate_contact(protein_name, pdb_top='__START_0.pdb', xtc_input=5, cutoff=
         contact = ContactProbData(protein_name, cutoff, read_from_file)
         return contact
 
-    traj, frames = load_traj_protein(pdb_top,xtc_input)
-    contact = ContactProbData(protein_name, cutoff, traj)
+    traj, sliced_traj, frames = load_traj_protein(pdb_top,xtc_input)
+    contact = ContactProbData(protein_name, cutoff, sliced_traj)
 
     return contact

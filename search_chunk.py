@@ -21,6 +21,10 @@ def inter_frames(r1,r2,traj,chunk=True,cutoff=0.8):
 # Use r[contact_select] to call the filtered trajectory
 
 # Search other interactions with the strongest interaction.
+def new_interaction_map(name,traj,contact_select,cutoff=0.8):
+    contact = cg.ContactProbData(name+'with', cutoff, traj[contact_select])
+    contact_non = cg.ContactProbData(name+'without', cutoff, traj[~contact_select])
+    return contact, contact_non
 
 
 # Compare radius of gyration and helicity
@@ -85,7 +89,7 @@ def calc_Rg(r):
     return(st.mean(d))
 
 # Average end to end distance of the ensemble
-# The defination of the end to end distnace is the distance between
+# The defination of the end to end distance is the distance between
 # the first alpha carbon and the last alpha carbon of the protein sequence.
 def calc_Re(r,t):
     topology=t.topology
@@ -95,3 +99,9 @@ def calc_Re(r,t):
     for temp in d:
         listtemp.append(float(temp[0]))
     return(st.mean(listtemp))
+
+def calculate_ensemble(traj, sliced_traj, length):
+    return {'Rg':calc_Rg(sliced_traj),'Re':calc_Re(sliced_traj,traj),'Heli':calc_Heli(traj,length),'Beta':calc_Beta(traj,length),'HB':calc_HB(traj,traj.n_frames,length)}
+def compare_ensemble(traj, sliced_traj, length, contact_select):
+    return {'interaction':calculate_ensemble(traj[contact_select],sliced_traj[contact_select],length),
+           'non_interaction':calculate_ensemble(traj[~contact_select],sliced_traj[~contact_select],length)}
