@@ -47,7 +47,7 @@ def multi_trajectory_test(args):
         #     default_function.test_function(name,path,residue)
         # else:
         traj_p, seq= default_function.multi_traj_pre(name, path, psi, residue)
-        default_function.interaction_map_pairwise(name, traj_p, seq, traj_p, repeat, read_from_file=False)
+        default_function.interaction_map_pairwise(name, traj_p, seq, traj_p, xtc_input=repeat, read_from_file=False)
     # elif single_traj is 1:
     #     default_function.single_traj_contactmap()
 
@@ -65,16 +65,20 @@ if __name__ == "__main__":
     parser.add_argument("--restype", "-restype", help="Name of Residue group, free energy altered(test_function)")
     parser.add_argument("--psi", "-psi", help="Psi value of transfer free energy(test_function)")
 
+    parser.add_argument("--search", help="Search mode")
+    parser.add_argument("--r1", help="The first residue in the target interaction")
+    parser.add_argument("--r2", help="The second residue in the target interaction")
+
     args = parser.parse_args()
     single_traj = args.single_traj
     single_traj = 0
     if single_traj==1 :
+        map_name=args.name
         path = args.protein_directory
         pdb_name=args.pdb
         xtc_name=args.xtc
-        os.chdir(path)
         sequence = readpath.readsequence_single()
-        default_function.interactionmap_pairwise_single_traj(path,pdb_name,xtc_name,sequence)
+        default_function.interaction_map_pairwise(map_name,path,sequence,path,pdb_name,xtc_name)
     else:
         multi_trajectory_test(args)
     # For multi trajectory analysis. Internal test only

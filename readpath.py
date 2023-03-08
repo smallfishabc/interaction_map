@@ -35,7 +35,7 @@ def readsequence_single():
 
 # Automatically change folder and do analysis on every sub-folder
 def subdir(pwd, psi, h):
-    # Can be altered based on different operation system and different trajectory file structure.
+    # Can be altered based on different operating system and different trajectory file structure.
     p='S_'+str(psi)
     print(p)
     print(h)

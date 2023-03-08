@@ -103,14 +103,12 @@ def load_xtc(xtc, pdb):
     return md.load(xtc, top=pdb)
 
 # What if we input a single xtc file, this need to be discuss and changed
-def generate_contact(protein_name, cutoff=0.8, repeats=5, read_from_file=0):
+def generate_contact(protein_name, pdb_top='__START_0.pdb', xtc_input=5, cutoff=0.8, read_from_file=0):
     """
     :param protein_name: input protein_name/ contact_map_name
     :type protein_name: str
     :param cutoff: cutoff of contact_map unit:nm
     :type cutoff: float
-    :param repeats: repeats number
-    :type repeats: int
     :param read_from_file: read or recalculate the contact map
     :type read_from_file: bool
     :return: a Contactmap object with the corresponding protein contact map
@@ -119,31 +117,7 @@ def generate_contact(protein_name, cutoff=0.8, repeats=5, read_from_file=0):
         contact = ContactProbData(protein_name, cutoff, read_from_file)
         return contact
 
-    traj, frames = load_traj_protein(xtc_input=repeats)
+    traj, frames = load_traj_protein(pdb_top,xtc_input)
     contact = ContactProbData(protein_name, cutoff, traj)
 
     return contact
-
-
-""" 
-    def compute_contact(self, traj):
-        # Calculate contact map using the MDtraj library. Cont stored the distance between two residues.
-        # The scheme 'CA' and ignore_nonprotein removed ions and ACE NME caps
-        [cont, pairs] = md.compute_contacts(self.traj, contacts='all', scheme='CA', ignore_nonprotein=True)
-        # Create a empty list for removing unnecessary pairs
-        index_list = []
-        for index, i in enumerate(pairs):
-            if (i[1] - i[0]) < 3:
-                # Add unnecessary pair index into the list
-                index_list.append(index)
-        # Remove the unnecessary pair
-        cont = np.delete(cont, index_list, axis=1)
-        pairs = np.delete(pairs, index_list, axis=0)
-        # Determine whether the distance is smaller than the cutoff.
-        contact = (cont < self.cutoff)
-        # Calculate the average contact frequency of each residue pair
-        cont_mean = contact.mean(0)
-        # Free up the memory
-        del contact
-        return pairs, cont_mean
-"""
