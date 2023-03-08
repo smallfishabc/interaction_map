@@ -13,6 +13,9 @@ import default_function
 
 def multi_trajectory_test(args):
     test = 1
+    search = 1
+    r1=13
+    r2=24
     if args.protein_directory:
         path = args.protein_directory
     elif test == 1:
@@ -44,13 +47,11 @@ def multi_trajectory_test(args):
     else:
         repeat=5
     if single_traj != 1:
-        # if test == 1:
-        #     default_function.test_function(name,path,residue)
-        # else:
         traj_p, seq= default_function.multi_traj_pre(name, path, psi, residue)
-        default_function.interaction_map_pairwise(name, traj_p, seq, traj_p, xtc_input=repeat, read_from_file=False)
-    # elif single_traj is 1:
-    #     default_function.single_traj_contactmap()
+        if search:
+            default_function.search_interaction(name, r1, r2, traj_p ,seq, traj_p, xtc_input=repeat)
+        else:
+            default_function.interaction_map_pairwise(name, traj_p, seq, traj_p, xtc_input=repeat, read_from_file=False)
 
 if __name__ == "__main__":
     showoff.welcome()
@@ -74,20 +75,22 @@ if __name__ == "__main__":
     single_traj = args.single_traj
     single_traj = 0
     search=args.search
-    if search:
-        r1=args.r1
-        r2=args.r2
+    search=1
 
-    else:
-        if single_traj:
-            map_name=args.name
-            path = args.protein_directory
-            pdb_name=args.pdb
-            xtc_name=args.xtc
-            sequence = readpath.readsequence_single()
-            default_function.interaction_map_pairwise(map_name,path,sequence,path,pdb_name,xtc_name)
+    if single_traj:
+        map_name=args.name
+        path = args.protein_directory
+        pdb_name=args.pdb
+        xtc_name=args.xtc
+        sequence = readpath.readsequence_single()
+        if search:
+            r1 = args.r1
+            r2 = args.r2
+            default_function.search_interaction(map_name, r1, r2,path,sequence,path,pdb_name,xtc_name)
         else:
-            multi_trajectory_test(args)
+            default_function.interaction_map_pairwise(map_name,path,sequence,path,pdb_name,xtc_name)
+    else:
+        multi_trajectory_test(args)
     # For multi trajectory analysis. Internal test only
 
 
