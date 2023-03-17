@@ -13,9 +13,6 @@ import default_function
 
 def multi_trajectory_test(args):
     test = 1
-    search = 1
-    r1=13
-    r2=24
     if args.protein_directory:
         path = args.protein_directory
     elif test == 1:
@@ -48,10 +45,7 @@ def multi_trajectory_test(args):
         repeat=5
     if single_traj != 1:
         traj_p, seq= default_function.multi_traj_pre(name, path, psi, residue)
-        if search:
-            default_function.search_interaction(name, r1, r2, traj_p ,seq, traj_p, xtc_input=repeat)
-        else:
-            default_function.interaction_map_pairwise(name, traj_p, seq, traj_p, xtc_input=repeat, read_from_file=False)
+        default_function.interaction_map_pairwise(name, traj_p, seq, traj_p, xtc_input=repeat, read_from_file=False)
 
 if __name__ == "__main__":
     showoff.welcome()
@@ -66,29 +60,16 @@ if __name__ == "__main__":
     parser.add_argument("--name", "-name", help="Name of the protein and the contact map(test_function)")
     parser.add_argument("--restype", "-restype", help="Name of Residue group, free energy altered(test_function)")
     parser.add_argument("--psi", "-psi", help="Psi value of transfer free energy(test_function)")
-
-    parser.add_argument("--search", help="Search mode")
-    parser.add_argument("--r1", help="The first residue in the target interaction")
-    parser.add_argument("--r2", help="The second residue in the target interaction")
-
     args = parser.parse_args()
     single_traj = args.single_traj
     single_traj = 0
-    search=args.search
-    search=1
-
     if single_traj:
         map_name=args.name
         path = args.protein_directory
         pdb_name=args.pdb
         xtc_name=args.xtc
         sequence = readpath.readsequence_single()
-        if search:
-            r1 = args.r1
-            r2 = args.r2
-            default_function.search_interaction(map_name, r1, r2,path,sequence,path,pdb_name,xtc_name)
-        else:
-            default_function.interaction_map_pairwise(map_name,path,sequence,path,pdb_name,xtc_name)
+        default_function.interaction_map_pairwise(map_name,path,sequence,path,pdb_name,xtc_name)
     else:
         multi_trajectory_test(args)
     # For multi trajectory analysis. Internal test only

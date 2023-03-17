@@ -12,7 +12,6 @@ import networkx as nx
 
 # Create the networkx graph
 #### problem need to be solved: width of the graph
-import interaction_strength
 ##Check this with the latest graphx library
 # Create a  networkx graph object
 def create_network(seq, length, size=10):
@@ -197,8 +196,6 @@ def interaction_map(seq, length, interaction, figname):
     # Plot interaction between each residue
     att1 = interaction_plotting(interaction, layout, ax,  1)
     att2 = interaction_plotting(interaction, layout, ax,  2)
-    rep1 = interaction_plotting(interaction, layout, ax, -1)
-    rep2 = interaction_plotting(interaction, layout, ax,  -2)
     graphg.add_edge(1, 5)
     # Save the plot to png file
     plt.savefig(figname + '.png')

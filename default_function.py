@@ -10,7 +10,6 @@ import contact_map_generation as cg
 import interaction_plot as ip
 import normalization as nl
 import readpath
-import search_chunk as sc
 import pandas as pd
 
 # This one is designed for multiple trajectory.
@@ -63,22 +62,4 @@ def interaction_map_pairwise(name, traj_path, sequence, output_dir, pdb_top='__S
     # Return the overall interaction strength
     return interaction
 
-# We may need to change the read_from_file option
-def search_interaction(name, r1, r2, traj_path, sequence, output_dir, pdb_top='__START_0.pdb', xtc_input=5, read_from_file=False):
-    os.chdir(traj_path)
-    traj, sliced_traj, frames = cg.load_traj_protein(pdb_top,xtc_input)
-    selected_frames=sc.inter_frames(r1,r2,traj)
-    contact,contact_non=sc.new_interaction_map(name,traj,selected_frames)
-    print('stage1')
-    interaction = nl.normalization(contact.contact)
-    interaction_non = nl.normalization(contact_non.contact)
-    ip.interaction_map(sequence, len(sequence), interaction, name)
-    os.chdir(output_dir)
-    ensemble_pd=pd.DataFrame(sc.compare_ensemble(traj,
-                                                 sliced_traj,
-                                                 len(sequence),
-                                                 contact_select=selected_frames))
-    ensemble_pd.to_csv('_'.join(['ensemble',str(r1),str(r2)])+'.csv',index=True)
-    interaction.to_csv('_'.join(['with','interaction',str(r1),str(r2)])+'.csv',index=False)
-    interaction_non.to_csv('_'.join(['without','interaction',str(r1),str(r2)])+'.csv',index=False)
 
