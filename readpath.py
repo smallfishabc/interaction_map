@@ -23,10 +23,10 @@ def readsequence(_traj_path):
     # Measure sequence length
     return seq
 
-def readsequence_single():
+def readsequence_single(path):
     # Read protein sequences
     print(os.getcwd())
-    seqopen = open('seq.txt', 'r')
+    seqopen = open(os.path.join(path, 'seq.txt'), 'r')
     seq = seqopen.read()
     # Clean the sequence
     while re.search('\s', seq[-1]) is not None:

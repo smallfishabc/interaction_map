@@ -21,7 +21,9 @@ def multi_trajectory_test(args):
         # path = 'F:\DATA_F\GSlinker\GS56-summary'
         # path = 'F:\DATA_F\PDBsumreal_0814\p53_new-summary'
         #path = 'F:\DATA_F\contact_mutation\p53_W53G-summary'
-        path = r'F:\DATA_F\All_analysis_test_github'
+        #path = r'F:\DATA_F\UGDH0.5_simplified_interaction_map'
+        #path = r'F:\DATA_F\puma_scrammble_sum\puma_scramble_20-summary'
+        path = r'F:\DATA_F\puma_scrammble_sum\puma_wildfull-summary'
         #path = 'F:\DATA_F\puma_scramble_new\puma_scrammble_sum\puma_wildfull-summary'
         #path='/media/lemoncatboy/WD_BLACK/DATA_F/puma_scramble_new/puma123/puma_wildfull-summary'
     if args.name:
@@ -62,13 +64,13 @@ if __name__ == "__main__":
     parser.add_argument("--psi", "-psi", help="Psi value of transfer free energy(test_function)")
     args = parser.parse_args()
     single_traj = args.single_traj
-    single_traj = 0
+    #single_traj = 0
     if single_traj:
         map_name=args.name
         path = args.protein_directory
         pdb_name=args.pdb
         xtc_name=args.xtc
-        sequence = readpath.readsequence_single()
+        sequence = readpath.readsequence_single(path)
         default_function.interaction_map_pairwise(map_name,path,sequence,path,pdb_name,xtc_name)
     else:
         multi_trajectory_test(args)

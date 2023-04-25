@@ -48,7 +48,7 @@ def interaction_map_pairwise(name, traj_path, sequence, output_dir, pdb_top='__S
         # Calculate interaction type based on ideal polymer model
         interaction = nl.normalization(contact.contact)
         # Save the interaction map's raw value into the csv file for backup
-        interaction.to_csv(os.path.join(output_dir, "interaction_1202.csv"))
+        interaction.to_csv(os.path.join(output_dir, "interaction_0317.csv"))
     # If we need to recalculate an existing IDP
     else:
         os.chdir(output_dir)
