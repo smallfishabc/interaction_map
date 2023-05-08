@@ -47,10 +47,13 @@ class ContactProbData:
         # Calculate the average contact frequency of each residue pair
         cont_mean = contact.mean(0)
         cont_df = pd.DataFrame({'r_1': pairs[:, 0], 'r_2': pairs[:, 1], 'cont_prob': cont_mean[:]})
+        cont_df['r_1']=cont_df['r_1'].astype('int')
+        cont_df['r_2'] = cont_df['r_2'].astype('int')
         cont_df['distance'] = cont_df['r_2'] - cont_df['r_1']
         # Free up the memory
         del contact
         del pairs
+        print(cont_df.dtypes)
         return cont_df
 
     # Define a function to read the average contact probability dataframe from file
@@ -119,5 +122,4 @@ def generate_contact(protein_name, pdb_top='__START_0.pdb', xtc_input=5, cutoff=
 
     traj, sliced_traj, frames = load_traj_protein(pdb_top,xtc_input)
     contact = ContactProbData(protein_name, cutoff, sliced_traj)
-
     return contact

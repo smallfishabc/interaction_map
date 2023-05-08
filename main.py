@@ -23,7 +23,7 @@ def multi_trajectory_test(args):
         #path = 'F:\DATA_F\contact_mutation\p53_W53G-summary'
         #path = r'F:\DATA_F\UGDH0.5_simplified_interaction_map'
         #path = r'F:\DATA_F\puma_scrammble_sum\puma_scramble_20-summary'
-        path = r'F:\DATA_F\puma_scrammble_sum\puma_wildfull-summary'
+        path = r'F:\DATA_F\E1A_pat-summary'
         #path = 'F:\DATA_F\puma_scramble_new\puma_scrammble_sum\puma_wildfull-summary'
         #path='/media/lemoncatboy/WD_BLACK/DATA_F/puma_scramble_new/puma123/puma_wildfull-summary'
     if args.name:
