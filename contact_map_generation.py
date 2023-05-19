@@ -41,7 +41,8 @@ class ContactProbData:
     def compute_contact(self, traj):
         # Calculate contact map using the MDtraj library. Cont stored the distance between two residues.
         # The scheme 'CA' and ignore_nonprotein removed ions and ACE NME caps
-        [cont, pairs] = md.compute_contacts(traj, contacts='all', scheme='CA', ignore_nonprotein=True)
+        indices = traj.top.select_pairs('all', 'all')
+        [cont, pairs] = md.compute_contacts(traj, indices)
         # Determine whether the distance is smaller than the cutoff.
         contact = (cont < self.cutoff)
         # Calculate the average contact frequency of each residue pair
@@ -106,7 +107,7 @@ def load_xtc(xtc, pdb):
     return md.load(xtc, top=pdb)
 
 # What if we input a single xtc file, this need to be discuss and changed
-def generate_contact(protein_name, pdb_top='__START_0.pdb', xtc_input=5, cutoff=0.8, read_from_file=0):
+def generate_contact(protein_name, pdb_top='__START_0.pdb', xtc_input=5, cutoff=1.2, read_from_file=0):
     """
     :param protein_name: input protein_name/ contact_map_name
     :type protein_name: str

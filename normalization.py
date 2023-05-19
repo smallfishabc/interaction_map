@@ -19,7 +19,7 @@ def fitting_function(df, a, b):
 
 
 # Use standard contact probability curve to calculate interaction strength
-def normalization(target_map, a1=1.64, b1=-1.32, inter_cutoff=(1.5, 0.5, -1, -2), value_list=(2, 1, 0, -1, -2)):
+def normalization(target_map, a1=13.12, b1=-2.32, inter_cutoff=(2, 1, -1, -2), value_list=(2, 1, 0, -1, -2)):
     """
 
     :param target_map: interaction data

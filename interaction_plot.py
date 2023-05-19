@@ -10,6 +10,7 @@ import numpy as np
 
 import networkx as nx
 
+
 # Create the networkx graph
 #### problem need to be solved: width of the graph
 ##Check this with the latest graphx library
@@ -83,13 +84,27 @@ def color_text(pos, index, colorselec, seq, ax):
     # Get the name of each residue
     label = seq[index]  # this makes "1" and 1 labeled the same
     # Color coding the sequence
-    ax.text(
+    type_dict = {'Y': 'aromatic', 'F': 'aromatic', 'W': 'aromatic',
+                 'R': 'positive', 'H': 'positive', 'K': 'positive',
+                 'D': 'negative', 'E': 'negative',
+                 'S': 'polar', 'T': 'polar', 'Q': 'polar', 'N': 'polar',
+                 'A': 'hydrophobic',
+                 'V': 'hydrophobic',
+                 'I': 'hydrophobic',
+                 'L': 'hydrophobic',
+                 'M': 'hydrophobic',
+                 'C': 'hydrophobic',
+                 'G': 'hydrophobic',
+                 'P': 'hydrophobic'}
+    color_dict = {'aromatic':'yellow','positive':'blue',
+                  'negative':'red','polar':'black','hydrophobic':'orange'}
+    if not color_dict.get(type_dict[label],0):
+        raise ValueError('wrong residue')
+    ax.plot(
         x - 0.2,
         y,
-        label,
-        color=colorselec,
-        transform=ax.transData,
-        clip_on=True, fontfamily='monospace'
+        marker='o',
+        color=color_dict[type_dict[label]],ms=7,markeredgecolor='black'
     )
 
 
@@ -151,26 +166,27 @@ def interaction_plotting(interaction, layout, ax, inter_type):
         connect = "arc3,rad=0.5"
     # During the debug process, we only consider the condition when plot_c>0.
     if inter_type > 0:
-        #full_strength, overall_strength = interaction_strength.calculate_overall_strength(interaction, inter_type)
+        # full_strength, overall_strength = interaction_strength.calculate_overall_strength(interaction, inter_type)
         full_strength = []
         overall_strength = 1
     else:
         full_strength = []
         overall_strength = -1
-    for index, data in interaction[interaction['plot_value']==inter_type].iterrows():
-        strength=data['relative_strength']
+    select_df=interaction[(interaction['plot_value'] == inter_type)&
+                          (interaction['distance']>4)]
+    for index, data in select_df.iterrows():
+        strength = data['cont_prob']
+        rela_strength = data['relative_strength']
         distance = data['distance']
         r1 = data['r_1']
         r2 = data['r_2']
-        if distance <=2:
-            continue
         if inter_type > 0:
             #    linewidth = raw_value_new[index]
-            linewidth = 2 * data['relative_strength']
+            linewidth = 4 * strength * (1+rela_strength)
             distance = data['distance']
         else:
             #    linewidth = -1 * raw_value_new[index]
-            linewidth = -2 * data['relative_strength'] * inter_type * 0.1
+            linewidth = -4 * strength * (rela_strength-1)
         # Adjust location to improve visualization effect
         print(data)
         a = layout[r1][0] - 0.2
@@ -188,6 +204,7 @@ def interaction_plotting(interaction, layout, ax, inter_type):
                                     ), )
     return overall_strength
 
+
 def interaction_map(seq, length, interaction, figname):
     # Create network object
     graphg = create_network(seq, length)
@@ -197,10 +214,10 @@ def interaction_map(seq, length, interaction, figname):
     (negacharged, posicharged, aromatic) = seq_color(seq)
     (fig, ax) = create_color_coding(seq, graphg, pos, negacharged, posicharged, aromatic)
     # Plot interaction between each residue
-    att1 = interaction_plotting(interaction, layout, ax,  1)
-    att2 = interaction_plotting(interaction, layout, ax,  2)
+    #att1 = interaction_plotting(interaction, layout, ax, 1)
+    att2 = interaction_plotting(interaction, layout, ax, 2)
     #rep1 = interaction_plotting(interaction, layout, ax,  -1)
-    #rep2 = interaction_plotting(interaction, layout, ax,  -2)
+    rep2 = interaction_plotting(interaction, layout, ax,  -2)
     graphg.add_edge(1, 5)
     # Save the plot to png file
     plt.savefig(figname + '.png')
@@ -208,5 +225,3 @@ def interaction_map(seq, length, interaction, figname):
     # Show the plot
     plt.show()
     # Return the interaction strength
-
-

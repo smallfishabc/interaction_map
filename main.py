@@ -64,7 +64,7 @@ if __name__ == "__main__":
     parser.add_argument("--psi", "-psi", help="Psi value of transfer free energy(test_function)")
     args = parser.parse_args()
     single_traj = args.single_traj
-    single_traj = 0
+    #single_traj = 0
     if single_traj:
         map_name=args.name
         path = args.protein_directory
