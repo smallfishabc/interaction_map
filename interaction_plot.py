@@ -216,7 +216,7 @@ def interaction_map(seq, length, interaction, figname):
     # Plot interaction between each residue
     #att1 = interaction_plotting(interaction, layout, ax, 1)
     att2 = interaction_plotting(interaction, layout, ax, 2)
-    #rep1 = interaction_plotting(interaction, layout, ax,  -1)
+    rep1 = interaction_plotting(interaction, layout, ax,  -1)
     rep2 = interaction_plotting(interaction, layout, ax,  -2)
     graphg.add_edge(1, 5)
     # Save the plot to png file

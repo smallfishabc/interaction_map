@@ -47,7 +47,7 @@ class ContactProbData:
         contact = (cont < self.cutoff)
         # Calculate the average contact frequency of each residue pair
         cont_mean = contact.mean(0)
-        cont_df = pd.DataFrame({'r_1': pairs[:, 0], 'r_2': pairs[:, 1], 'cont_prob': cont_mean[:]})
+        cont_df = pd.DataFrame({'r_1': pairs[:, 0]+1, 'r_2': pairs[:, 1]+1, 'cont_prob': cont_mean[:]})
         cont_df['r_1']=cont_df['r_1'].astype('int')
         cont_df['r_2'] = cont_df['r_2'].astype('int')
         cont_df['distance'] = cont_df['r_2'] - cont_df['r_1']
@@ -88,11 +88,8 @@ def load_traj_protein(pdb_top='__START_0.pdb', xtc_input='__traj_0.xtc'):
         list_xtc = xtc_input
     t = load_xtc(list_xtc, pdb_top)
     # Select the protein from the pdb file
-    u = t.top.select('protein')
-    r = t.atom_slice(u)
     # Get frame number of the trajectory file.
-    return t, r, r.n_frames
-
+    return t
 
 # input a xtc list to load 1 or more xtc files
 def load_xtc(xtc, pdb):
@@ -121,6 +118,6 @@ def generate_contact(protein_name, pdb_top='__START_0.pdb', xtc_input=5, cutoff=
         contact = ContactProbData(protein_name, cutoff, read_from_file)
         return contact
 
-    traj, sliced_traj, frames = load_traj_protein(pdb_top,xtc_input)
-    contact = ContactProbData(protein_name, cutoff, sliced_traj)
+    traj = load_traj_protein(pdb_top,xtc_input)
+    contact = ContactProbData(protein_name, cutoff, traj)
     return contact
