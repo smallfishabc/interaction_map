@@ -158,19 +158,17 @@ def interaction_plotting(interaction, layout, ax, inter_type):
         full_strength = []
         overall_strength = -1
     for index, data in interaction[interaction['plot_value']==inter_type].iterrows():
-        strength=data['relative_strength']
+        strength = data['cont_prob']
         distance = data['distance']
         r1 = data['r_1']
         r2 = data['r_2']
         if distance <=2:
             continue
         if inter_type > 0:
-            linewidth = raw_value_new[index]
-            linewidth = 2 * data['relative_strength']
+            linewidth = 4 * strength * (1 + data['relative_strength'])
             distance = data['distance']
         else:
-            linewidth = -1 * raw_value_new[index]
-            linewidth = -2 * data['relative_strength'] * inter_type * 0.1
+            linewidth = -4 * strength * (data['relative_strength'] - 1)
         # Adjust location to improve visualization effect
         print(data)
         a = layout[r1][0] - 0.2
@@ -199,8 +197,8 @@ def interaction_map(seq, length, interaction, figname):
     # Plot interaction between each residue
     att1 = interaction_plotting(interaction, layout, ax,  1)
     att2 = interaction_plotting(interaction, layout, ax,  2)
-    #rep1 = interaction_plotting(interaction, layout, ax,  -1)
-    #rep2 = interaction_plotting(interaction, layout, ax,  -2)
+    rep1 = interaction_plotting(interaction, layout, ax,  -1)
+    rep2 = interaction_plotting(interaction, layout, ax,  -2)
     graphg.add_edge(1, 5)
     # Save the plot to png file
     plt.savefig(figname + '.png')
