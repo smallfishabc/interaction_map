@@ -63,7 +63,7 @@ def create_position(graphg):
     '''
     # Get the position and the layout for the networkx nodes
     pos = nx.get_node_attributes(graphg, 'pos')
-    layout = dict((n, graphg.node[n]["pos"]) for n in graphg.nodes())
+    layout = dict((n, graphg._node[n]["pos"]) for n in graphg.nodes())
     return pos, layout
 
 
@@ -165,11 +165,11 @@ def interaction_plotting(interaction, layout, ax, inter_type):
         if distance <=2:
             continue
         if inter_type > 0:
-            #    linewidth = raw_value_new[index]
+            linewidth = raw_value_new[index]
             linewidth = 2 * data['relative_strength']
             distance = data['distance']
         else:
-            #    linewidth = -1 * raw_value_new[index]
+            linewidth = -1 * raw_value_new[index]
             linewidth = -2 * data['relative_strength'] * inter_type * 0.1
         # Adjust location to improve visualization effect
         print(data)
