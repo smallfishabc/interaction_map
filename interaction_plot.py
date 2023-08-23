@@ -165,10 +165,10 @@ def interaction_plotting(interaction, layout, ax, inter_type):
         if distance <=2:
             continue
         if inter_type > 0:
-            linewidth = 4 * strength * (1 + data['relative_strength'])
+            linewidth = 2 * strength * (1 + data['relative_strength'])
             distance = data['distance']
         else:
-            linewidth = -4 * strength * (data['relative_strength'] - 1)
+            linewidth = -2 * strength * (data['relative_strength'] - 1)
         # Adjust location to improve visualization effect
         print(data)
         a = layout[r1][0] - 0.2
