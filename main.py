@@ -25,7 +25,7 @@ def multi_trajectory_test(args):
         #path = r'F:\DATA_F\puma_scrammble_sum\puma_scramble_20-summary'
         #path = r'F:\DATA_F\E1A_pat-summary'
         #path = 'F:\DATA_F\Eli_lilly_figure\puma_wildfull-summary'
-        path = 'F:\DATA_F\Eli_lilly_figure\puma_scramble_85-summary'
+        path = 'F:\DATA_F\CG_p53_interaction\p53-summary'
         #path='/media/lemoncatboy/WD_BLACK/DATA_F/puma_scramble_new/puma123/puma_wildfull-summary'
     if args.name:
         name = args.name
