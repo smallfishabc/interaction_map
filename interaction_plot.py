@@ -64,7 +64,7 @@ def create_position(graphg):
     '''
     # Get the position and the layout for the networkx nodes
     pos = nx.get_node_attributes(graphg, 'pos')
-    layout = dict((n, graphg.node[n]["pos"]) for n in graphg.nodes())
+    layout = dict((n, graphg._node[n]["pos"]) for n in graphg.nodes())
     return pos, layout
 
 
@@ -214,7 +214,7 @@ def interaction_map(seq, length, interaction, figname):
     (negacharged, posicharged, aromatic) = seq_color(seq)
     (fig, ax) = create_color_coding(seq, graphg, pos, negacharged, posicharged, aromatic)
     # Plot interaction between each residue
-    #att1 = interaction_plotting(interaction, layout, ax, 1)
+    att1 = interaction_plotting(interaction, layout, ax, 1)
     att2 = interaction_plotting(interaction, layout, ax, 2)
     rep1 = interaction_plotting(interaction, layout, ax,  -1)
     rep2 = interaction_plotting(interaction, layout, ax,  -2)

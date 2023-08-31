@@ -71,6 +71,7 @@ if __name__ == "__main__":
         pdb_name=args.pdb
         xtc_name=args.xtc
         sequence = readpath.readsequence_single(path)
+        print("first_stop")
         default_function.interaction_map_pairwise(map_name,path,sequence,path,pdb_name,xtc_name)
     else:
         multi_trajectory_test(args)
