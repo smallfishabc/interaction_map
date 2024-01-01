@@ -1,26 +1,21 @@
-# inteactionmap_single_publish
-Author:Feng Yu
-This branch is designed based on single_publish version.
+# Intrinsically Disordered Protein(IDP) Interaction Map for Coarse-Grained simulation
 
-In this branch, we have two types of functions.
+Author: Feng Yu
+This branch is designed based on the single_publish version.
 
-The first type of functions is designed for analyzing single pdb/xtc file. 
 
-The second type of functions is designed for multi-protein analysis based my simulation data structure.
+In this branch, we focus on analyzing the intramolecular interaction of IDPs with the CALVADOS coarse-grained simulation engine designed by Kresten Lindorff-Larsen.
+We will analyze the simulation trajectory and plot the strong interaction between protein residues which may impact the overall structural preference of IDPs
 
-We will focus on explaining the first type of functions in this readme file.
 
-Basic usage of the database:
-##copy from the main
+**A Google Colab notebook is created for this repository to help biologists design IDRs without a deep understanding of the code.**
 
-File structure:
-Our main script will usually called the function in default_function.py. Therefore, the main function will
-not directly interact with the backend.
 
-The functions in default_function.py are calling the function in the backend to generate a interaction map 
-or calculte the interaction strength.
+Program structure:
+default_function.py describes protocols to analyze, design, and plot IDR intramolecular interactions.
+main.py provides an interface for users to separate the backend and the frontend by calling functions in the default_function.py. 
 
-The other files are storing functions having different purposes. We will explain some of them in the
-following paragraph.
 
-Function explaination
+The functions in default_function.py are calling the function in the backend to generate an interaction map 
+or calculate the interaction strength.
+
