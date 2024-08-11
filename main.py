@@ -25,8 +25,16 @@ def multi_trajectory_test(args):
         #path = r'F:\DATA_F\puma_scrammble_sum\puma_scramble_20-summary'
         #path = r'F:\DATA_F\E1A_pat-summary'
         #path = 'F:\DATA_F\Eli_lilly_figure\puma_wildfull-summary'
-        path = 'F:\DATA_F\CG_p53_interaction\p53-summary'
-        #path='/media/lemoncatboy/WD_BLACK/DATA_F/puma_scramble_new/puma123/puma_wildfull-summary'
+        #path = 'F:\DATA_F\Interaction_map_target\DP00007_APEX1_P27695\DP00007-summary'
+        #path = 'F:\DATA_F\Interaction_map_target\DP00086_p53Nterm_P04637\p53-summary'
+        #path = 'F:\DATA_F\Interaction_map_target\SAXS_Cov2_Linker_P0DTC9\SARS_COV_2_LINKER-summary'
+        #path = 'F:\DATA_F\Interaction_map_target\DP00949_UPF2_Q9HAU5\DP00949-summary'
+        #path = 'F:\DATA_F\Interaction_map_target\DP00719_TDG_Q13569\DP00719-summary'
+        #path = 'F:\DATA_F\Interaction_map_target\DP00549_zincfinger593_O00488\DP00549-summary'
+        #path = 'F:\DATA_F\Interaction_map_target\DP00356_CITED2_Q99967\DP00356-summary'
+        #path = 'F:\DATA_F\Interaction_map_target\DP00011_sulfotransferase_P0DMM9\DP00011-summary'
+        path = 'F:\DATA_F\Interaction_map_target\DP01128_DP00018_CDKN1B_p27_P46527\DP00018-summary'
+       #path='/media/lemoncatboy/WD_BLACK/DATA_F/puma_scramble_new/puma123/puma_wildfull-summary'
     if args.name:
         name = args.name
     elif single_traj != 1:
@@ -48,6 +56,7 @@ def multi_trajectory_test(args):
         repeat=5
     if single_traj != 1:
         traj_p, seq= default_function.multi_traj_pre(name, path, psi, residue)
+        print(traj_p)
         default_function.interaction_map_pairwise(name, traj_p, seq, traj_p, xtc_input=repeat, read_from_file=False)
 
 if __name__ == "__main__":
@@ -65,7 +74,7 @@ if __name__ == "__main__":
     parser.add_argument("--psi", "-psi", help="Psi value of transfer free energy(test_function)")
     args = parser.parse_args()
     single_traj = args.single_traj
-    #single_traj = 0
+    single_traj = 0
     if single_traj:
         map_name=args.name
         path = args.protein_directory
