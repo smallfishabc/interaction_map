@@ -427,9 +427,10 @@ pytest tests/ -v
 
 **New to testing?** We've created comprehensive guides for scientists:
 
-- 📚 **[Testing Guide](docs/TESTING_GUIDE.md)** - Complete introduction to unit testing for scientists
-- 🎓 **[Testing Tutorial](docs/TESTING_TUTORIAL.md)** - Hands-on exercises with step-by-step instructions
-- 📋 **[Testing Examples](docs/TESTING_EXAMPLES.md)** - Copy-paste-ready test patterns
+- 📚 **[Testing Guide](docs/testing/TESTING_GUIDE.md)** - Complete introduction to unit testing for scientists
+- 🎓 **[Testing Tutorial](docs/testing/TESTING_TUTORIAL.md)** - Hands-on exercises with step-by-step instructions
+- 📋 **[Testing Examples](docs/testing/TESTING_EXAMPLES.md)** - Copy-paste-ready test patterns
+- 🎯 **[Quick Reference](docs/testing/TESTING_QUICK_REFERENCE.md)** - One-page cheat sheet
 
 These guides are designed for scientists who may not have programming backgrounds. They explain:
 - What unit tests are and why they matter for research
@@ -438,7 +439,9 @@ These guides are designed for scientists who may not have programming background
 - How to debug failed tests
 - Common testing patterns and best practices
 
-**Quick Start**: Open [docs/TESTING_TUTORIAL.md](docs/TESTING_TUTORIAL.md) and complete Exercise 1!
+**Quick Start**: Open [docs/testing/TESTING_TUTORIAL.md](docs/testing/TESTING_TUTORIAL.md) and complete Exercise 1!
+
+See also: [docs/testing/README.md](docs/testing/README.md) for the complete testing documentation index.
 
 ### Code Quality
 

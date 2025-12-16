@@ -4,16 +4,17 @@ Welcome to the IDP Interaction Map documentation!
 
 ## Getting Started
 
-- **[README](../README.md)** - Main project overview, installation, and quick start
-- **[Mutation Scanner Guide](MUTATION_SCANNER.md)** - Complete guide to the mutation scanner module
+- **[Main README](../README.md)** - Project overview, installation, and quick start guide
+- **[Quick Reference](../QUICK_REFERENCE.md)** - Command cheatsheet for common tasks
+- **[Mutation Scanner Guide](../MUTATION_SCANNER.md)** - Complete guide to the mutation scanner
 
 ## Testing Documentation (For Scientists)
 
-Our testing documentation is designed specifically for scientists who may not have extensive programming experience. Start here if you're new to testing:
+Our testing documentation is designed specifically for scientists who may not have extensive programming experience. All testing docs are now in the `testing/` subdirectory.
 
 ### 📚 Learning Path
 
-1. **[Testing Guide](TESTING_GUIDE.md)** - START HERE!
+1. **[Testing Guide](testing/TESTING_GUIDE.md)** - START HERE!
    - What are unit tests and why they matter
    - Setting up your testing environment
    - Understanding test structure
@@ -24,7 +25,7 @@ Our testing documentation is designed specifically for scientists who may not ha
    - **Audience**: Complete beginners to testing
    - **Time**: 30-60 minutes to read, longer to practice
 
-2. **[Testing Tutorial](TESTING_TUTORIAL.md)** - Hands-on practice
+2. **[Testing Tutorial](testing/TESTING_TUTORIAL.md)** - Hands-on practice
    - 10 step-by-step exercises
    - Real examples from the codebase
    - Progressive difficulty
@@ -32,7 +33,7 @@ Our testing documentation is designed specifically for scientists who may not ha
    - **Audience**: After reading the Testing Guide
    - **Time**: 2-4 hours with all exercises
 
-3. **[Testing Examples](TESTING_EXAMPLES.md)** - Reference library
+3. **[Testing Examples](testing/TESTING_EXAMPLES.md)** - Reference library
    - 15+ copy-paste-ready test patterns
    - Real-world scenarios
    - Organized by test type
@@ -40,7 +41,7 @@ Our testing documentation is designed specifically for scientists who may not ha
    - **Audience**: When writing your own tests
    - **Time**: Use as needed (reference)
 
-4. **[Testing Quick Reference](TESTING_QUICK_REFERENCE.md)** - Cheat sheet
+4. **[Testing Quick Reference](testing/TESTING_QUICK_REFERENCE.md)** - Cheat sheet
    - One-page reference card (printable!)
    - Common commands
    - Common assertions
@@ -48,29 +49,42 @@ Our testing documentation is designed specifically for scientists who may not ha
    - **Audience**: Everyone (keep handy!)
    - **Time**: 5 minutes to review
 
+5. **[Test Annotations Summary](testing/TEST_ANNOTATIONS_SUMMARY.md)** - Code walkthrough
+   - Complete explanation of test file structure
+   - Line-by-line annotations guide
+   - Scientific context for mutations
+   - How to read and write tests
+   - **Audience**: Learning by example
+   - **Time**: Reference as needed
+
 ### 🎯 Choose Your Path
 
 **I've never written a test before:**
-1. Read [Testing Guide](TESTING_GUIDE.md) (focus on sections 1-5)
-2. Do Exercise 1 from [Testing Tutorial](TESTING_TUTORIAL.md)
-3. Keep [Quick Reference](TESTING_QUICK_REFERENCE.md) open
+1. Read [Testing Guide](testing/TESTING_GUIDE.md) (focus on sections 1-5)
+2. Do Exercise 1 from [Testing Tutorial](testing/TESTING_TUTORIAL.md)
+3. Keep [Quick Reference](testing/TESTING_QUICK_REFERENCE.md) open
 4. Practice with Exercise 2-3
 
 **I understand the basics:**
-1. Skim [Testing Guide](TESTING_GUIDE.md) sections 6-9
-2. Do [Testing Tutorial](TESTING_TUTORIAL.md) exercises 4-7
-3. Use [Testing Examples](TESTING_EXAMPLES.md) as templates
+1. Skim [Testing Guide](testing/TESTING_GUIDE.md) sections 6-9
+2. Do [Testing Tutorial](testing/TESTING_TUTORIAL.md) exercises 4-7
+3. Use [Testing Examples](testing/TESTING_EXAMPLES.md) as templates
 
 **I need to write tests now:**
-1. Check [Testing Examples](TESTING_EXAMPLES.md) for similar cases
-2. Use [Quick Reference](TESTING_QUICK_REFERENCE.md) for syntax
+1. Check [Testing Examples](testing/TESTING_EXAMPLES.md) for similar cases
+2. Use [Quick Reference](testing/TESTING_QUICK_REFERENCE.md) for syntax
 3. Refer to existing tests in `tests/` directory
-4. Consult [Testing Guide](TESTING_GUIDE.md) for patterns
+4. Consult [Testing Guide](testing/TESTING_GUIDE.md) for patterns
 
 **I'm debugging a test:**
-1. Check [Quick Reference](TESTING_QUICK_REFERENCE.md) "Debugging" section
-2. Review [Testing Guide](TESTING_GUIDE.md) "Debugging Failed Tests"
+1. Check [Quick Reference](testing/TESTING_QUICK_REFERENCE.md) "Debugging" section
+2. Review [Testing Guide](testing/TESTING_GUIDE.md) "Debugging Failed Tests"
 3. Look at similar tests in `tests/` directory
+
+**I want to understand the test code:**
+1. Read [Test Annotations Summary](testing/TEST_ANNOTATIONS_SUMMARY.md)
+2. Open `tests/test_mutation_scanner.py` and read the annotations
+3. See how concepts from the Guide apply to real code
 
 ## Feature Documentation
 
@@ -83,7 +97,7 @@ Our testing documentation is designed specifically for scientists who may not ha
 
 ### Mutation Scanner
 
-- **[Mutation Scanner Guide](MUTATION_SCANNER.md)** - Complete documentation
+- **[Mutation Scanner Guide](../MUTATION_SCANNER.md)** - Complete documentation
   - Overview and installation
   - Quick start examples
   - Detailed usage guide
