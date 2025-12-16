@@ -414,8 +414,31 @@ pip install -e ".[dev]"
 pytest
 
 # Run with coverage
-pytest --cov=idp_interaction_map --cov-report=html
+pytest --cov=src/idp_interaction_map --cov-report=html
+
+# Run specific test file
+pytest tests/test_mutation_scanner.py -v
+
+# Run with verbose output
+pytest tests/ -v
 ```
+
+### Learning to Write Tests
+
+**New to testing?** We've created comprehensive guides for scientists:
+
+- 📚 **[Testing Guide](docs/TESTING_GUIDE.md)** - Complete introduction to unit testing for scientists
+- 🎓 **[Testing Tutorial](docs/TESTING_TUTORIAL.md)** - Hands-on exercises with step-by-step instructions
+- 📋 **[Testing Examples](docs/TESTING_EXAMPLES.md)** - Copy-paste-ready test patterns
+
+These guides are designed for scientists who may not have programming backgrounds. They explain:
+- What unit tests are and why they matter for research
+- How to write your first test (with examples)
+- How to test the mutation scanner and other functions
+- How to debug failed tests
+- Common testing patterns and best practices
+
+**Quick Start**: Open [docs/TESTING_TUTORIAL.md](docs/TESTING_TUTORIAL.md) and complete Exercise 1!
 
 ### Code Quality
 
