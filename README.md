@@ -1,11 +1,11 @@
 # IDP Interaction Map
 
-A modern Python package for analyzing intramolecular interactions in Intrinsically Disordered Proteins (IDPs) from both **coarse-grained and all-atom** molecular dynamics simulations.
+A modern Python package for analyzing intramolecular interactions in Intrinsically Disordered Proteins (IDPs) from both **coarse-grained and all-atom** molecular dynamics simulations. **Now with integrated mutation scanner** for targeted protein engineering!
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests](https://img.shields.io/badge/tests-56%20passed-brightgreen.svg)]()
-[![Coverage](https://img.shields.io/badge/coverage-78%25-success.svg)]()
+[![Tests](https://img.shields.io/badge/tests-68%20passed-brightgreen.svg)]()
+[![Coverage](https://img.shields.io/badge/coverage-74%25-success.svg)]()
 [![Validated](https://img.shields.io/badge/validated-5%20proteins-success.svg)]()
 [![Dual Mode](https://img.shields.io/badge/mode-CG%20%7C%20All--Atom-informational.svg)]()
 
@@ -15,14 +15,15 @@ A modern Python package for analyzing intramolecular interactions in Intrinsical
 
 ## Overview
 
-This package analyzes simulation trajectories to identify and visualize strong intramolecular interactions that influence IDP structural preferences. Supports both **coarse-grained (CG)** simulations from the CALVADOS force field and **all-atom** MD simulations.
+This package analyzes simulation trajectories to identify and visualize strong intramolecular interactions that influence IDP structural preferences. Supports both **coarse-grained (CG)** simulations from the CALVADOS force field and **all-atom** MD simulations. **NEW**: Includes mutation scanner for generating targeted mutations based on interaction analysis!
 
 ### ✅ Production Ready
 - **Dual Mode**: Supports both CG (CALVADOS) and all-atom simulations
 - **Validated**: Tested on 4 CG + 1 all-atom protein with 100% accuracy
-- **Tested**: 56 automated tests, 78% code coverage
+- **Tested**: 68 automated tests, 74% code coverage
 - **Modern**: Type hints, logging, comprehensive documentation
 - **Easy**: Unified CLI and Python API for both modes
+- **NEW**: Integrated mutation scanner for protein engineering
 
 ### Key Features
 
@@ -30,6 +31,7 @@ This package analyzes simulation trajectories to identify and visualize strong i
 - 📊 **Contact Map Generation**: Compute residue-residue contact probabilities from MD trajectories
 - 🔬 **Interaction Analysis**: Compare observed contacts against ideal polymer model
 - 🎨 **Rich Visualization**: Generate publication-quality interaction network diagrams
+- 🧬 **Mutation Scanner**: Generate targeted mutations to modulate interactions (**NEW**)
 - ⚙️ **Auto-Configuration**: Automatically selects correct parameters for each mode
 - ⚡ **Modern Python**: Type hints, logging, comprehensive testing
 - 🔧 **Easy Installation**: Standard PyPI package with all dependencies managed
@@ -39,8 +41,8 @@ This package analyzes simulation trajectories to identify and visualize strong i
 ### From Source
 
 ```bash
-git clone https://github.com/yourusername/idp-interaction-map.git
-cd idp-interaction-map
+git clone https://github.com/smallfishabc/interaction_map.git
+cd interaction_map
 pip install -e .
 ```
 
@@ -175,7 +177,80 @@ interaction_df = analyze_interaction_map(
 | Cutoff | (2, 1, -1, -2) | (1.5, 0.5, -1, -2) |
 | Force Fields | CALVADOS, Mpipi | CHARMM, AMBER, etc. |
 
-> 📖 **See [ALL_ATOM_VS_CG.md](ALL_ATOM_VS_CG.md) for comprehensive comparison**
+>  📖 **See [ALL_ATOM_VS_CG.md](ALL_ATOM_VS_CG.md) for comprehensive comparison**
+
+## Mutation Scanner (NEW!)
+
+Generate targeted mutations to modulate protein interactions based on interaction map analysis.
+
+### Quick Start
+
+```bash
+# Generate attractive mutations
+idp-mutation-scan \
+  -i protein_interaction.csv \
+  -s ACDEFGHIKLMNPQRSTVWY \
+  -n MyProtein \
+  -o ./mutations \
+  --type attractive
+
+# Generate repulsive mutations with forbidden regions
+idp-mutation-scan \
+  -i protein_interaction.csv \
+  -f seq.txt \
+  -n MyProtein \
+  -o ./mutations \
+  --type repulsive \
+  --forbidden 1-5,40-45
+```
+
+### Python API
+
+```python
+from idp_interaction_map import scan_mutations_from_csv
+
+# Generate full mutation library
+mutations = scan_mutations_from_csv(
+    interaction_csv="protein_interaction.csv",
+    sequence="ACDEFGHIKLMNPQRSTVWY",
+    protein_name="MyProtein",
+    output_dir="./mutations",
+    interaction_type='attractive',
+    forbidden_regions=[1, 2, 3],
+    min_chunk_strength=1.0
+)
+
+# Results organized by mutation type
+print(f"Generated {sum(len(df) for df in mutations.values())} mutations")
+for name, df in mutations.items():
+    print(f"  - {name}: {len(df)} mutations")
+```
+
+### Mutation Types
+
+- **Single mutations**: Target one residue in an interaction pair
+  - Charge mutations (E/K)
+  - Polar mutations (Q)
+  - Hydrophobic mutations (L/S)
+
+- **Pair mutations**: Mutate both residues in an interaction
+  - Double charge (EE, KK)
+  - Double polar (QQ)
+
+- **Chunk mutations**: Mutate 3-residue chunks (residue ± 1)
+  - Charge chunks (EEE, KKK)
+  - Polar chunks (QQQ)
+
+### Output Format
+
+Mutations saved as CSV files:
+```
+MyProtein_R10E,ACDEFGHIEK...
+MyProtein_K15A,ACDEFGHIKA...
+MyProtein_R10E_K15E,ACDEFGHIEE...
+```
+
+📖 **See [MUTATION_SCANNER.md](MUTATION_SCANNER.md) for comprehensive documentation**
 
 ## Advanced Usage
 

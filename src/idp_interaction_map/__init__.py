@@ -6,6 +6,7 @@ __author__ = "Feng Yu"
 from idp_interaction_map.contact_map import ContactProbData, generate_contact, load_traj_protein
 from idp_interaction_map.core import analyze_interaction_map
 from idp_interaction_map.normalization import normalize_interaction_map
+from idp_interaction_map.mutation_scanner import MutationScanner, scan_mutations_from_csv
 
 __all__ = [
     "ContactProbData",
@@ -13,4 +14,6 @@ __all__ = [
     "load_traj_protein",
     "analyze_interaction_map",
     "normalize_interaction_map",
+    "MutationScanner",
+    "scan_mutations_from_csv",
 ]

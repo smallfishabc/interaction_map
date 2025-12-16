@@ -44,6 +44,7 @@ dev = [
 
 [project.scripts]
 idp-interaction-map = "idp_interaction_map.cli:main"
+idp-mutation-scan = "idp_interaction_map.cli_mutations:main"
 
 [project.urls]
 Homepage = "https://github.com/yourusername/idp-interaction-map"
