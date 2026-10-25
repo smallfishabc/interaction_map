@@ -2,6 +2,9 @@
 .venv/
 .conda-env/
 
+# Working copies and fixtures built by the scripts in scratch/
+scratch/_work/
+
 # Python
 __pycache__/
 *.pyc
