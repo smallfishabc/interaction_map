@@ -24,13 +24,17 @@ conda env create -f environment.yml
 conda activate interaction-map
 ```
 
+Every command below uses `python scripts/main.py`, which works straight from a checkout.
+After `pip install -e . --no-deps` the command `interaction-map` takes exactly the same
+arguments.
+
 On Windows the environment has to be **activated**, not just called by path, or the
 compiled extensions cannot find their DLLs.
 
 ## 1. Draw the map
 
 ```
-python main.py -p A39G_K24Y.pdb -x A39G_K24Y.dcd -dir tests/fixtures \
+python scripts/main.py -p A39G_K24Y.pdb -x A39G_K24Y.dcd -dir tests/fixtures \
                -name A39G_K24Y --profile cg --out out --no_show
 ```
 
@@ -83,7 +87,7 @@ they are still in the table — worth knowing if you ever count repulsive pairs.
 Split the ensemble on whether one interaction is formed and compare the two halves:
 
 ```
-python main.py -p A39G_K24Y.pdb -x A39G_K24Y.dcd -dir tests/fixtures \
+python scripts/main.py -p A39G_K24Y.pdb -x A39G_K24Y.dcd -dir tests/fixtures \
                -name A39G_K24Y --profile cg --out out --no_show --search 20 40
 ```
 
@@ -113,7 +117,7 @@ Give more than one pair to compare the ensemble with and without a *group* of
 interactions:
 
 ```
-python main.py -p A39G_K24Y.pdb -x A39G_K24Y.dcd -dir tests/fixtures \
+python scripts/main.py -p A39G_K24Y.pdb -x A39G_K24Y.dcd -dir tests/fixtures \
                -name A39G_K24Y --profile cg --out out --no_show \
                --search 20 40 30 50 --combine any
 ```
@@ -159,7 +163,7 @@ frames.
 Give several trajectories of the same construct and they are treated as repeats:
 
 ```
-python main.py -p top.pdb -x run1.xtc run2.xtc run3.xtc -name protein
+python scripts/main.py -p top.pdb -x run1.xtc run2.xtc run3.xtc -name protein
 ```
 
 The contact probability is unchanged — still the average over every frame — but the table
@@ -174,7 +178,7 @@ is 0.737 with a standard error of 0.186 across its five repeats.
 For the `<name>-summary/<restype>/S_<psi>/` convention:
 
 ```
-python main.py --database -dir "path/to/p53-summary" --psi 0 --restype BB --repeat 5
+python scripts/main.py --database -dir "path/to/p53-summary" --psi 0 --restype BB --repeat 5
 ```
 
 This resolves the folder convention and then runs exactly the same analysis.
@@ -182,6 +186,6 @@ This resolves the folder convention and then runs exactly the same analysis.
 ## Where to go next
 
 - `README.md` — the profiles, the residue numbering, and what each module does
-- `scratch/README.md` — the checks that verify this code still reproduces the published
+- `eval/README.md` — the checks that verify this code still reproduces the published
   output
 - `SUMMARY.md` — what changed against the branches this was combined from

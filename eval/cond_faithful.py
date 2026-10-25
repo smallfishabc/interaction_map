@@ -28,7 +28,7 @@ MODULES = ['contact_map_generation.py', 'normalization.py', 'interaction_plot.py
 R1 = int(sys.argv[1]) if len(sys.argv) > 2 else 13
 R2 = int(sys.argv[2]) if len(sys.argv) > 2 else 24
 
-sys.path.insert(0, PROJECT)
+sys.path.insert(0, os.path.join(PROJECT, 'src'))
 
 import matplotlib
 matplotlib.use('Agg')
@@ -124,8 +124,8 @@ if result.returncode != 0:
     sys.exit('legacy run failed')
 
 print('running the combined code...')
-import default_function
-import profiles
+from interaction_map import default_function
+from interaction_map import profiles
 
 with open(os.path.join(new_dir, 'seq.fasta')) as handle:
     seq = handle.read().strip()

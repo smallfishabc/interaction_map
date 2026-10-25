@@ -6,12 +6,12 @@ Created on Mon Aug  9 12:36:23 2021
 """
 
 import os
-import contact_map_generation as cg
-import interaction_plot as ip
-import normalization as nl
-import profiles
-import readpath
-import search_chunk as sc
+from . import contact_map_generation as cg
+from . import interaction_plot as ip
+from . import normalization as nl
+from . import profiles
+from . import readpath
+from . import search_chunk as sc
 import pandas as pd
 
 

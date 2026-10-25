@@ -8,7 +8,7 @@ Created on Mon Jul  5 15:00:05 2021
 import matplotlib.pyplot as plt
 import numpy as np
 
-import profiles
+from . import profiles
 
 # Colour networkx used for its nodes, kept so the sequence track renders as before.
 NODE_COLOR = '#1f78b4'

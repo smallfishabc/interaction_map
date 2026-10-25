@@ -11,8 +11,8 @@ import numpy as np
 import pandas as pd
 import statistics as st
 
-import contact_map_generation as cg
-import profiles
+from . import contact_map_generation as cg
+from . import profiles
 
 
 # A rule for deciding whether a frame contains the interaction of interest.

@@ -7,7 +7,7 @@ Created on Mon Jul  5 18:10:07 2021
 # I will intergrate the normalization process into the contact map class and make Chunk class a subclass of Contact map
 import numpy as np
 
-import profiles
+from . import profiles
 
 
 # fitting function of standard contact probability map.

@@ -6,10 +6,10 @@ Created on Mon Jul  5 14:37:47 2021
 """
 import argparse
 import os
-import profiles
-import readpath
-import showoff
-import default_function
+from . import profiles
+from . import readpath
+from . import showoff
+from . import default_function
 
 # Trajectory folder used by --database when --protein_directory is not given. Edit this
 # line to run the simulation database from the IDE. The folders used for previous figures
@@ -99,7 +99,9 @@ def run_database(args):
         profile=args.profile, show=not args.no_show)
 
 
-if __name__ == "__main__":
+# Command line entry point. Installed as `interaction-map`, and still runnable as
+# `python scripts/main.py`.
+def main(argv=None):
     showoff.welcome()
     parser = argparse.ArgumentParser(
         description='Interaction map for an intrinsically disordered region.')
@@ -152,7 +154,7 @@ if __name__ == "__main__":
                              "3x3 window. 0 narrows it to the single pair.")
     parser.add_argument("--single_traj", "-straj", action="store_true",
                         help=argparse.SUPPRESS)  # accepted and ignored; now the default
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     if args.database:
         run_database(args)
@@ -161,3 +163,7 @@ if __name__ == "__main__":
     else:
         parser.error('Give a topology and a trajectory with -p and -x, '
                      'or use --database for the simulation database layout.')
+
+
+if __name__ == "__main__":
+    main()

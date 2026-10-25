@@ -7,7 +7,7 @@ They are not part of `pytest`: each one needs one of the data folders, which are
 to commit, and two of them check old branches out of git and run them. Run them by hand
 after any change that touches the analysis.
 
-Working copies and fixtures are written to `scratch/_work/`, which is not tracked. The data
+Working copies and fixtures are written to `eval/_work/`, which is not tracked. The data
 folders themselves are only ever read.
 
 | Script | Compares against | Needs |
@@ -17,10 +17,10 @@ folders themselves are only ever read.
 | `cond_faithful.py` | the `1115_new_start` branch, taken from git | `All_atom_p53_interaction/` |
 
 ```
-python scratch/regress.py                 replay normalization, arc selection, the figure
-python scratch/regress.py --full          also recompute the contact map from the 5 repeats
-python scratch/cg_faithful.py [MUTANT]    default A39G_K24Y
-python scratch/cond_faithful.py [R1 R2]   default 13 24
+python eval/regress.py                 replay normalization, arc selection, the figure
+python eval/regress.py --full          also recompute the contact map from the 5 repeats
+python eval/cg_faithful.py [MUTANT]    default A39G_K24Y
+python eval/cond_faithful.py [R1 R2]   default 13 24
 ```
 
 Exit code 0 means everything matched.

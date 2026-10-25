@@ -3,9 +3,9 @@ import numpy as np
 import pandas as pd
 import pytest
 
-import contact_map_generation as cmg
-import normalization as nl
-import schema
+from interaction_map import contact_map_generation as cmg
+from interaction_map import normalization as nl
+from interaction_map import schema
 
 from conftest import requires_p53, synthetic_trajectory
 

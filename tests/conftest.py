@@ -11,8 +11,9 @@ import sys
 import pytest
 
 PROJECT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-if PROJECT not in sys.path:
-    sys.path.insert(0, PROJECT)
+SRC = os.path.join(PROJECT, 'src')
+if SRC not in sys.path:
+    sys.path.insert(0, SRC)
 
 import matplotlib
 matplotlib.use('Agg')

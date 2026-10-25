@@ -222,7 +222,7 @@ and there is no stored CG output to compare against, so this needs your eye on t
 rather than a regression.
 
 ```
-python main.py --single_traj --profile cg -dir CG_p53_random -p A39G_K24Y.pdb -x A39G_K24Y.dcd -name A39G_K24Y --no_show
+python scripts/main.py --single_traj --profile cg -dir CG_p53_random -p A39G_K24Y.pdb -x A39G_K24Y.dcd -name A39G_K24Y --no_show
 ```
 
 One thing will fail here: the single-trajectory path reads the sequence from `seq.txt`
@@ -236,7 +236,7 @@ the full `BB/S_-3 … S_3` condition spread and no prior analysis output, so it 
 check that the multi-condition path still works.
 
 ```
-python main.py -dir "2024_simulation/SARS_COV_2_LINKER-summary" --psi 0 --no_show
+python scripts/main.py -dir "2024_simulation/SARS_COV_2_LINKER-summary" --psi 0 --no_show
 ```
 
 **3. Read back a saved map.** `read_from_file=True` now loads the contact CSV instead of

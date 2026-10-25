@@ -3,7 +3,7 @@
 .conda-env/
 
 # Working copies and fixtures built by the scripts in scratch/
-scratch/_work/
+eval/_work/
 
 # Python
 __pycache__/
@@ -35,3 +35,6 @@ seq.fasta
 !tests/fixtures/*.pdb
 !tests/fixtures/*.dcd
 !tests/fixtures/*.fasta
+
+# Reference notebooks copied in for porting; not part of the package
+temp_examples/

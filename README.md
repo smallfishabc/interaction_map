@@ -35,12 +35,27 @@ other.
 
 The coarse-grained reference falls off faster, which is why its exponent is steeper.
 
+## Layout
+
+```
+src/interaction_map/   the package
+scripts/main.py        run it without installing
+tests/                 the test suite, with a small coarse-grained fixture
+eval/                  checks that the code still reproduces published output
+```
+
 ## Installing
 
 ```
 conda env create -f environment.yml
 conda activate interaction-map
+pip install -e . --no-deps
 ```
+
+`--no-deps` because mdtraj and the rest come from conda; mdtraj publishes no Windows
+wheels for 1.9.x, so pip cannot supply them. Installing gives you the `interaction-map`
+command. Skipping the install is fine too — `python scripts/main.py` takes the same
+arguments and puts `src/` on the path itself.
 
 mdtraj publishes no Windows wheels for 1.9.x, so this has to be a conda environment
 rather than a pip virtualenv. **On Windows the environment must be activated**, not just
@@ -62,20 +77,20 @@ Multi-repeat simulation database layout:
 ```
 
 ```
-python main.py -dir "path/to/<name>-summary" --profile all_atom
+python scripts/main.py -dir "path/to/<name>-summary" --profile all_atom
 ```
 
 A single topology and trajectory instead:
 
 ```
-python main.py --single_traj -dir "path/to/folder" -p protein.pdb -x protein.dcd -name protein --profile cg
+python scripts/main.py --single_traj -dir "path/to/folder" -p protein.pdb -x protein.dcd -name protein --profile cg
 ```
 
 Several trajectories of the same construct are treated as repeats, and the spread between
 them is reported as `p_sem`:
 
 ```
-python main.py -p top.pdb -x run1.xtc run2.xtc run3.xtc -name protein
+python scripts/main.py -p top.pdb -x run1.xtc run2.xtc run3.xtc -name protein
 ```
 
 Useful flags: `--psi`, `--restype`, `--repeat`, `--name`, `--out`, `--seq`, `--no_show`.
@@ -85,7 +100,7 @@ Useful flags: `--psi`, `--restype`, `--repeat`, `--name`, `--out`, `--seq`, `--n
 Split the ensemble on whether one interaction is formed, and compare the two halves:
 
 ```
-python main.py -p top.pdb -x traj.xtc -name protein --search 13 24
+python scripts/main.py -p top.pdb -x traj.xtc -name protein --search 13 24
 ```
 
 A frame counts as containing the interaction when any residue pair in the 3x3 window
@@ -118,9 +133,9 @@ does not match the topology. Both are diagnostic and alter nothing.
 
 ## Modules
 
-| File | Contents |
+| `src/interaction_map/` | Contents |
 |---|---|
-| `main.py` | command line entry point |
+| `cli.py` | command line entry point |
 | `default_function.py` | the pipeline: contacts → normalization → figure |
 | `profiles.py` | the two sets of calibrated constants |
 | `contact_map_generation.py` | trajectory loading, contact probabilities, numbering guards |

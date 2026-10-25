@@ -4,7 +4,7 @@ If one of these fails, a published number has moved.
 """
 import pytest
 
-import profiles
+from interaction_map import profiles
 
 
 def test_all_atom_constants():

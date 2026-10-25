@@ -12,8 +12,8 @@ import mdtraj as md
 import numpy as np
 import pandas as pd
 
-import profiles
-import schema
+from . import profiles
+from . import schema
 
 
 # One letter code for a residue. mdtraj knows the standard amino acids; coarse-grained

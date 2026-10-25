@@ -1,10 +1,16 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "interaction-map"
 version = "0.1.0"
 description = "Interaction maps for intrinsically disordered regions from all-atom and coarse-grained simulation"
+readme = "README.md"
 requires-python = ">=3.10"
 # Declared for reference. Installing from here will not work on Windows, because mdtraj
-# publishes no wheels for 1.9.x; use environment.yml.
+# publishes no wheels for 1.9.x; create the environment from environment.yml first and
+# then `pip install -e . --no-deps`.
 dependencies = [
     "mdtraj==1.9.9",
     "numpy==1.23.5",
@@ -15,6 +21,12 @@ dependencies = [
 
 [project.optional-dependencies]
 test = ["pytest==7.4.4"]
+
+[project.scripts]
+interaction-map = "interaction_map.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -11,9 +11,9 @@ import numpy as np
 import pandas as pd
 import pytest
 
-import interaction_plot as ip
-import normalization as nl
-import profiles
+from interaction_map import interaction_plot as ip
+from interaction_map import normalization as nl
+from interaction_map import profiles
 
 from conftest import requires_p53
 

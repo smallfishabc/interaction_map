@@ -29,7 +29,7 @@ REF_DIR = os.path.join(DATA, 'BB', 'S_0')
 WORK = os.path.join(HERE, '_work', 'regress')
 COPY_DIR = os.path.join(WORK, 'p53-summary', 'BB', 'S_0')
 
-sys.path.insert(0, PROJECT)
+sys.path.insert(0, os.path.join(PROJECT, 'src'))
 
 import matplotlib
 matplotlib.use('Agg')
@@ -37,8 +37,8 @@ matplotlib.use('Agg')
 import numpy as np
 import pandas as pd
 
-import profiles
-import normalization as nl
+from interaction_map import profiles
+from interaction_map import normalization as nl
 
 FAIL = []
 FULL = '--full' in sys.argv
@@ -82,7 +82,7 @@ print('reference: {0} pairs, sequence {1} residues'.format(len(REF), len(SEQ)))
 
 # ------------------------------------------------------------------ numbering
 section('residue numbering')
-import contact_map_generation as cg
+from interaction_map import contact_map_generation as cg
 
 check('r_1 min is 1', int(REF['r_1'].min()) == 1, int(REF['r_1'].min()))
 check('r_2 max is len(seq)', int(REF['r_2'].max()) == len(SEQ),
@@ -130,7 +130,7 @@ check('contact cutoff is 0.8', aa.cutoff == 0.8, aa.cutoff)
 
 # ------------------------------------------------------------------ arc selection
 section('arc selection and line widths')
-import interaction_plot as ip
+from interaction_map import interaction_plot as ip
 
 graphg = ip.create_network(SEQ, len(SEQ))
 pos, layout = ip.create_position(graphg)

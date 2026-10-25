@@ -24,7 +24,7 @@ MODULES = ['contact_map_generation.py', 'normalization.py', 'interaction_plot.py
 
 NAME = sys.argv[1] if len(sys.argv) > 1 and not sys.argv[1].startswith('-') else 'A39G_K24Y'
 
-sys.path.insert(0, PROJECT)
+sys.path.insert(0, os.path.join(PROJECT, 'src'))
 
 import matplotlib
 matplotlib.use('Agg')
@@ -95,10 +95,10 @@ subprocess.check_call([sys.executable, 'run_legacy.py'], cwd=legacy_dir,
                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 print('running the combined code...')
-import profiles
-import contact_map_generation as cg
-import normalization as nl
-import interaction_plot as ip
+from interaction_map import profiles
+from interaction_map import contact_map_generation as cg
+from interaction_map import normalization as nl
+from interaction_map import interaction_plot as ip
 
 seq = read_fasta(os.path.join(new_dir, NAME + '.fasta'))
 prof = profiles.get_profile('cg')
