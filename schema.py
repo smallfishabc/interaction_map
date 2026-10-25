@@ -81,9 +81,13 @@ def validate(df, schema):
     if len(df) == 0:
         problems.append('{0}: no rows'.format(schema.name))
         return problems
+    # Checks run against the required columns only. A table may carry more than the schema
+    # asks for, and some of those are legitimately empty: p_sem has nothing to report when
+    # a run has a single repeat.
+    required = df[schema.columns]
     for description, predicate in schema.checks:
         try:
-            if not predicate(df):
+            if not predicate(required):
                 problems.append('{0}: {1} -- failed'.format(schema.name, description))
         except Exception as exc:
             problems.append('{0}: {1} -- could not be checked ({2})'.format(

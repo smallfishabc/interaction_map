@@ -50,14 +50,86 @@ class ChunkContact(object):
                 for x in range(a - self.window, a + self.window + 1)
                 for y in range(b - self.window, b + self.window + 1)]
 
+    # True for every frame in which this interaction is formed.
+    def mask(self, traj):
+        # The scheme has to match the model. 1115 hardcoded 'ca', which is right for the
+        # all-atom topologies it was written for but finds nothing in a coarse-grained one,
+        # where the beads are named after the residue; mdtraj then warns and drops every
+        # pair, leaving an empty array.
+        [cont, pairs] = md.compute_contacts(traj, contacts=self.pairs(),
+                                            scheme=self.profile.contact_scheme,
+                                            ignore_nonprotein=True)
+        return np.any(cont < self.cutoff, axis=1)
+
     def describe(self):
         return {'r1': self.r1, 'r2': self.r2, 'window': self.window if self.chunk else 0,
                 'cutoff': self.cutoff, 'chunk': bool(self.chunk),
                 'profile': self.profile.name, 'n_pairs': len(self.pairs())}
 
+    def label(self):
+        return '{0}_{1}'.format(self.r1, self.r2)
+
     def __repr__(self):
         return 'ChunkContact({0}, {1}, window={2}, cutoff={3})'.format(
             self.r1, self.r2, self.window, self.cutoff)
+
+
+# Several interactions treated as one condition.
+#
+#   mode 'any'  a frame counts when at least one of them is formed
+#   mode 'all'  a frame counts only when every one of them is formed
+#
+# 'any' asks what the ensemble looks like when this group of contacts is in play at all;
+# 'all' asks what it looks like when they are formed together, which is the stricter
+# question and will usually leave far fewer frames on the 'with' side.
+class InteractionSet(object):
+
+    MODES = ('any', 'all')
+
+    def __init__(self, selectors, mode='any'):
+        self.selectors = list(selectors)
+        if not self.selectors:
+            raise ValueError('InteractionSet needs at least one interaction')
+        if mode not in self.MODES:
+            raise ValueError('mode must be one of {0}, got {1!r}'.format(self.MODES, mode))
+        self.mode = mode
+
+    def mask(self, traj):
+        combined = None
+        for selector in self.selectors:
+            current = selector.mask(traj)
+            if combined is None:
+                combined = current
+            elif self.mode == 'any':
+                combined = combined | current
+            else:
+                combined = combined & current
+        return combined
+
+    def describe(self):
+        return {'mode': self.mode,
+                'n_interactions': len(self.selectors),
+                'interactions': [s.describe() for s in self.selectors]}
+
+    def label(self):
+        return (self.mode + '_') + '__'.join(s.label() for s in self.selectors)
+
+    def __repr__(self):
+        return 'InteractionSet({0}, mode={1!r})'.format(
+            ', '.join(repr(s) for s in self.selectors), self.mode)
+
+
+# Build a selector for one or more residue pairs.
+def interaction_set(pairs, mode='any', window=1, cutoff=None, chunk=True, profile=None):
+    """
+    :param pairs: iterable of (r1, r2), numbered as in the contact table
+    :param mode: 'any' for frames where at least one is formed, 'all' for frames where
+                 every one is formed
+    :return: InteractionSet
+    """
+    selectors = [ChunkContact(r1, r2, window=window, cutoff=cutoff, chunk=chunk, profile=profile)
+                 for r1, r2 in pairs]
+    return InteractionSet(selectors, mode=mode)
 
 
 # Get frame numbers with the target interaction
@@ -69,23 +141,21 @@ def inter_frames(r1, r2, traj, chunk=True, cutoff=None, window=1, profile=None):
     return frames_where(traj, selector)
 
 
-# Apply a selector to a trajectory.
+# Apply a selector to a trajectory. Works for a single interaction or a set of them.
 def frames_where(traj, selector):
-    [cont, pairs] = md.compute_contacts(traj, contacts=selector.pairs(), scheme='ca',
-                                        ignore_nonprotein=True)
-    contact = (cont < selector.cutoff)
-    contact_select = np.any(contact, axis=1)
-    return contact_select
+    return selector.mask(traj)
 
 
 # Use r[contact_select] to call the filtered trajectory
 
 # Search other interactions with the strongest interaction.
-def new_interaction_map(name, traj, contact_select, cutoff=None, profile=None):
+def new_interaction_map(name, traj, contact_select, cutoff=None, profile=None, output_dir=None):
     profile = profiles.get_profile(profile)
     cutoff = profile.cutoff if cutoff is None else cutoff
-    contact = cg.ContactProbData(name + 'with', cutoff, traj[contact_select], profile=profile)
-    contact_non = cg.ContactProbData(name + 'without', cutoff, traj[~contact_select], profile=profile)
+    contact = cg.ContactProbData(name + 'with', cutoff, traj[contact_select], profile=profile,
+                                 output_dir=output_dir)
+    contact_non = cg.ContactProbData(name + 'without', cutoff, traj[~contact_select], profile=profile,
+                                     output_dir=output_dir)
     return contact, contact_non
 
 
@@ -161,9 +231,15 @@ def calc_Rg(r):
 # Note that the alpha carbon indices come from t while the distances are measured in r.
 # That works because the protein atoms sit at the front of the topology and keep their
 # indices when it is sliced. Left as it is: it is how every existing number was produced.
-def calc_Re(r, t):
+def calc_Re(r, t, profile=None):
+    profile = profiles.get_profile(profile)
     topology = t.topology
-    rpology = topology.select_atom_indices(selection='alpha')
+    if profile.has_backbone:
+        rpology = topology.select_atom_indices(selection='alpha')
+    else:
+        # One bead per residue, so there are no alpha carbons to select. The chain ends are
+        # the first and last bead.
+        rpology = [0, topology.n_atoms - 1]
     d = md.compute_distances(r, [[rpology[0], rpology[-1]]])
     listtemp = []
     for temp in d:
@@ -175,16 +251,26 @@ def calc_Re(r, t):
 # Rg and the end to end distance are measured on the protein slice, while the secondary
 # structure and the hydrogen bonds are measured on the full trajectory. Changing that
 # would change every number this has ever produced.
-def calculate_ensemble(traj, sliced_traj, length):
-    return {'Rg': calc_Rg(sliced_traj),
-            'Re': calc_Re(sliced_traj, traj),
-            'Heli': calc_Heli(traj, length),
-            'Beta': calc_Beta(traj, length),
-            'HB': calc_HB(traj, traj.n_frames, length),
-            'Frames': traj.n_frames}
+def calculate_ensemble(traj, sliced_traj, length, profile=None):
+    profile = profiles.get_profile(profile)
+    values = {'Rg': calc_Rg(sliced_traj),
+              'Re': calc_Re(sliced_traj, traj, profile=profile),
+              'Frames': traj.n_frames}
+    if profile.has_backbone:
+        values['Heli'] = calc_Heli(traj, length)
+        values['Beta'] = calc_Beta(traj, length)
+        values['HB'] = calc_HB(traj, traj.n_frames, length)
+    else:
+        # DSSP needs a backbone and the hydrogen bond search needs hydrogens. Neither
+        # exists in a one bead per residue model, so these are not measurable rather than
+        # zero, and saying so is better than reporting a number that means nothing.
+        values['Heli'] = float('nan')
+        values['Beta'] = float('nan')
+        values['HB'] = float('nan')
+    return values
 
 
-def compare_ensemble(traj, sliced_traj, length, contact_select):
+def compare_ensemble(traj, sliced_traj, length, contact_select, profile=None):
     """
     Ensemble properties of the frames that contain the interaction and those that do not.
 
@@ -192,5 +278,7 @@ def compare_ensemble(traj, sliced_traj, length, contact_select):
     handful of frames means something very different from an even one, and the original
     output did not say which it was.
     """
-    return {'interaction': calculate_ensemble(traj[contact_select], sliced_traj[contact_select], length),
-            'non_interaction': calculate_ensemble(traj[~contact_select], sliced_traj[~contact_select], length)}
+    return {'interaction': calculate_ensemble(traj[contact_select], sliced_traj[contact_select],
+                                              length, profile=profile),
+            'non_interaction': calculate_ensemble(traj[~contact_select], sliced_traj[~contact_select],
+                                                  length, profile=profile)}

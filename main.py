@@ -17,6 +17,25 @@ import default_function
 DEFAULT_PATH = r'F:\DATA_F\Interaction_map_target\Individual Proteins\p53-summary'
 
 
+
+# Results go next to the trajectory unless --out says otherwise, in which case the folder
+# is created if it is not there yet.
+def output_directory(args, default):
+    if not args.out:
+        return default
+    if not os.path.isdir(args.out):
+        os.makedirs(args.out)
+    return os.path.abspath(args.out)
+
+
+# --search takes a flat list of residue numbers, read as pairs.
+def search_pairs(args):
+    values = args.search
+    if len(values) % 2:
+        raise SystemExit('--search needs an even number of residues, read as pairs')
+    return [(values[i], values[i + 1]) for i in range(0, len(values), 2)]
+
+
 # One topology plus one or more trajectory files. This is the published entry point.
 def run_single(args):
     directory = args.protein_directory or '.'
@@ -31,13 +50,20 @@ def run_single(args):
     # one counts as a repeat when the spread between repeats is reported.
     xtc_input = args.xtc[0] if len(args.xtc) == 1 else list(args.xtc)
     if args.search:
-        return default_function.search_interaction(
-            name, args.search[0], args.search[1], directory, sequence, args.out or directory,
-            pdb_top=args.pdb, xtc_input=xtc_input,
-            profile=args.profile, show=not args.no_show,
-            window=args.window, chunk=args.window > 0)
+        pairs = search_pairs(args)
+        if len(pairs) == 1:
+            return default_function.search_interaction(
+                name, pairs[0][0], pairs[0][1], directory, sequence, output_directory(args, directory),
+                pdb_top=args.pdb, xtc_input=xtc_input,
+                profile=args.profile, show=not args.no_show,
+                window=args.window, chunk=args.window > 0)
+        return default_function.compare_interactions(
+            name, pairs, directory, sequence, output_directory(args, directory),
+            pdb_top=args.pdb, xtc_input=xtc_input, profile=args.profile,
+            mode=args.combine, window=args.window, chunk=args.window > 0,
+            with_maps=args.with_maps, show=not args.no_show)
     return default_function.interaction_map_pairwise(
-        name, directory, sequence, args.out or directory,
+        name, directory, sequence, output_directory(args, directory),
         pdb_top=args.pdb, xtc_input=xtc_input,
         profile=args.profile, show=not args.no_show)
 
@@ -56,12 +82,19 @@ def run_database(args):
     traj_path, sequence = default_function.multi_traj_pre(name, path, psi, residue)
     print(traj_path)
     if args.search:
-        return default_function.search_interaction(
-            name, args.search[0], args.search[1], traj_path, sequence, args.out or traj_path,
-            xtc_input=repeat, profile=args.profile, show=not args.no_show,
-            window=args.window, chunk=args.window > 0)
+        pairs = search_pairs(args)
+        if len(pairs) == 1:
+            return default_function.search_interaction(
+                name, pairs[0][0], pairs[0][1], traj_path, sequence, output_directory(args, traj_path),
+                xtc_input=repeat, profile=args.profile, show=not args.no_show,
+                window=args.window, chunk=args.window > 0)
+        return default_function.compare_interactions(
+            name, pairs, traj_path, sequence, output_directory(args, traj_path),
+            xtc_input=repeat, profile=args.profile, mode=args.combine,
+            window=args.window, chunk=args.window > 0,
+            with_maps=args.with_maps, show=not args.no_show)
     return default_function.interaction_map_pairwise(
-        name, traj_path, sequence, args.out or traj_path,
+        name, traj_path, sequence, output_directory(args, traj_path),
         xtc_input=repeat, read_from_file=False,
         profile=args.profile, show=not args.no_show)
 
@@ -99,11 +132,20 @@ if __name__ == "__main__":
                         help="Residue group whose transfer free energy is altered (--database only)")
     parser.add_argument("--psi", "-psi",
                         help="Psi value of the transfer free energy (--database only)")
-    parser.add_argument("--search", nargs=2, metavar=('R1', 'R2'), type=int,
-                        help="Conditional analysis. Split the ensemble on whether the "
-                             "interaction between these two residues is formed, and compare "
-                             "the contact maps and ensemble properties of the two halves. "
-                             "Residues are numbered as in the contact table.")
+    parser.add_argument("--search", nargs='+', metavar='R', type=int,
+                        help="Conditional analysis. Give residue pairs: --search 13 24 "
+                             "splits the ensemble on that one interaction and also rebuilds "
+                             "the contact maps. More than one pair, --search 13 24 37 44, "
+                             "compares the ensemble properties with and without the group, "
+                             "combined according to --combine. Residues are numbered as in "
+                             "the contact table.")
+    parser.add_argument("--combine", choices=('any', 'all'), default='any',
+                        help="How several interactions are combined. 'any' selects frames "
+                             "where at least one is formed, 'all' only frames where every "
+                             "one is formed together. Default any.")
+    parser.add_argument("--with_maps", action="store_true",
+                        help="With several interactions, also rebuild a contact map and "
+                             "figure for each side of the split.")
     parser.add_argument("--window", type=int, default=1,
                         help="Half width of the residue window used to decide that the "
                              "interaction is present. 1, the default, is the published "

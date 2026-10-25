@@ -32,3 +32,6 @@ seq.fasta
 *.png
 *.svg
 *.csv
+!tests/fixtures/*.pdb
+!tests/fixtures/*.dcd
+!tests/fixtures/*.fasta

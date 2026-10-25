@@ -105,17 +105,76 @@ def search_interaction(name, r1, r2, traj_path, sequence, output_dir, pdb_top='_
     if n_with == 0 or n_with == len(selected_frames):
         print('  WARNING: one side of the split is empty, the comparison is meaningless')
 
-    contact, contact_non = sc.new_interaction_map(name, traj, selected_frames, profile=profile)
+    contact, contact_non = sc.new_interaction_map(name, traj, selected_frames, profile=profile,
+                                                  output_dir=output_dir)
     interaction = nl.normalization(contact.contact, profile=profile)
     interaction_non = nl.normalization(contact_non.contact, profile=profile)
 
     figure_name = os.path.join(output_dir, name) if output_dir else name
     ip.interaction_map(sequence, len(sequence), interaction, figure_name, profile=profile, show=show)
 
-    ensemble = sc.compare_ensemble(traj, sliced_traj, len(sequence), contact_select=selected_frames)
+    ensemble = sc.compare_ensemble(traj, sliced_traj, len(sequence),
+                                   contact_select=selected_frames, profile=profile)
     ensemble_pd = pd.DataFrame(ensemble)
     suffix = '_'.join([str(r1), str(r2)]) + '.csv'
     ensemble_pd.to_csv(os.path.join(output_dir, '_'.join(['ensemble', suffix])), index=True)
     interaction.to_csv(os.path.join(output_dir, '_'.join(['with', 'interaction', suffix])), index=False)
     interaction_non.to_csv(os.path.join(output_dir, '_'.join(['without', 'interaction', suffix])), index=False)
     return interaction, interaction_non, ensemble_pd
+
+
+# Compare ensemble properties with and without a chosen set of interactions.
+#
+# search_interaction above answers the question for one interaction and also rebuilds the
+# contact maps. This one takes any number of interactions, combines them with 'any' or
+# 'all', and reports only the ensemble properties, which is usually what the question is.
+#
+#   mode 'any'   frames where at least one of the interactions is formed
+#   mode 'all'   frames where every one of them is formed at the same time
+def compare_interactions(name, pairs, traj_path, sequence, output_dir, pdb_top='__START_0.pdb',
+                         xtc_input=5, profile=None, mode='any', window=1, chunk=True,
+                         cutoff=None, with_maps=False, show=False):
+    """
+    :param pairs: iterable of (r1, r2), numbered as in the contact table
+    :param mode: 'any' or 'all'
+    :param with_maps: also rebuild and save a contact map for each side
+    :return: (dataframe of the comparison, boolean mask over frames)
+    """
+    profile = profiles.get_profile(profile)
+    os.chdir(traj_path)
+    traj, sliced_traj, frames = cg.load_traj_protein(pdb_top, xtc_input, profile=profile)
+
+    selector = sc.interaction_set(pairs, mode=mode, window=window, chunk=chunk,
+                                  cutoff=cutoff, profile=profile)
+    print('selecting frames: {0}'.format(selector))
+    selected = sc.frames_where(traj, selector)
+    n_with = int(selected.sum())
+    total = len(selected)
+    print('  {0} of {1} frames ({2:.1%}) satisfy the {3!r} condition'.format(
+        n_with, total, n_with / float(total), mode))
+    if n_with == 0 or n_with == total:
+        print('  WARNING: one side of the split is empty, the comparison is meaningless')
+        return None, selected
+
+    comparison = pd.DataFrame(
+        sc.compare_ensemble(traj, sliced_traj, len(sequence), contact_select=selected,
+                            profile=profile))
+    # Record what was asked for alongside the answer, so the file can be read on its own.
+    comparison.loc['mode'] = [mode, mode]
+    comparison.loc['interactions'] = ['; '.join('{0}-{1}'.format(a, b) for a, b in pairs)] * 2
+
+    label = selector.label()
+    comparison.to_csv(os.path.join(output_dir, 'ensemble_' + label + '.csv'), index=True)
+
+    if with_maps:
+        contact, contact_non = sc.new_interaction_map(name, traj, selected, profile=profile,
+                                                      output_dir=output_dir)
+        interaction = nl.normalization(contact.contact, profile=profile)
+        interaction_non = nl.normalization(contact_non.contact, profile=profile)
+        interaction.to_csv(os.path.join(output_dir, 'with_interaction_' + label + '.csv'), index=False)
+        interaction_non.to_csv(os.path.join(output_dir, 'without_interaction_' + label + '.csv'),
+                               index=False)
+        ip.interaction_map(sequence, len(sequence), interaction,
+                           os.path.join(output_dir, name + '_' + label),
+                           profile=profile, show=show)
+    return comparison, selected

@@ -29,6 +29,17 @@ class Profile:
                                             which already drops pairs with |i-j| < 3
                             'all_pairs'  -> top.select_pairs('all', 'all'), which keeps every
                                             pair. Valid only for one-bead-per-residue models.
+        has_backbone        Whether the model carries a real protein backbone. All-atom
+                            does, so alpha carbons, DSSP and hydrogen bonds are available.
+                            One bead per residue does not, so helicity, beta content and
+                            hydrogen bonds are not defined and the end to end distance has
+                            to be measured between the first and last bead instead of
+                            between alpha carbons.
+        contact_scheme      How the distance between two residues is measured.
+                            all-atom: 'ca', the alpha carbons.
+                            CG: 'closest-heavy', mdtraj's default. CALVADOS beads are named
+                            after the residue rather than CA, so asking for 'ca' finds no
+                            alpha carbon and silently discards every pair.
         slice_protein       Slice the topology down to 'protein' before computing contacts
         residue_index_offset
                             Added to the raw mdtraj residue index so that r_1 / r_2 are
@@ -60,6 +71,8 @@ class Profile:
     name: str
     cutoff: float
     pair_selection: str
+    contact_scheme: str
+    has_backbone: bool
     slice_protein: bool
     residue_index_offset: int
     reference_a: float
@@ -77,6 +90,8 @@ ALL_ATOM = Profile(
     name='all_atom',
     cutoff=0.8,
     pair_selection='mdtraj_ca',
+    contact_scheme='ca',
+    has_backbone=True,
     slice_protein=True,
     residue_index_offset=0,
     reference_a=1.64,
@@ -96,6 +111,8 @@ CG = Profile(
     name='cg',
     cutoff=1.2,
     pair_selection='all_pairs',
+    contact_scheme='closest-heavy',
+    has_backbone=False,
     slice_protein=False,
     residue_index_offset=1,
     reference_a=13.12,
