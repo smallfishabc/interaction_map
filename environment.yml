@@ -1,0 +1,30 @@
+# Analysis environment for the Interaction Map.
+#
+#   conda env create -f environment.yml
+#   conda activate interaction-map
+#   pytest
+#
+# Windows note: the environment must be activated, not just invoked by path. Calling
+# <env>/python.exe directly leaves the env's Library/bin off the DLL search path, and the
+# compiled extensions in mdtraj and matplotlib then fail to load, killing the interpreter
+# with no traceback.
+#
+# Version notes:
+#   mdtraj      publishes no Windows wheels for any 1.9.x, so this cannot be a pip venv.
+#               1.9.6 has no Python 3.10 build at all. 1.9.9 predates the August 2023
+#               reference output and is the version the reference figures were made with.
+#   setuptools  must stay below 81. mdtraj 1.9.x imports pkg_resources, which newer
+#               setuptools no longer ships.
+#   networkx    no longer required. The sequence track is drawn directly with matplotlib.
+name: interaction-map
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - mdtraj=1.9.9
+  - numpy=1.23.5
+  - pandas=1.5.3
+  - scipy=1.9.3
+  - matplotlib-base=3.6.3
+  - setuptools=68.2.2
+  - pytest=7.4.4

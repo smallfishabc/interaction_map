@@ -1,0 +1,31 @@
+# Environments
+.venv/
+.conda-env/
+
+# Python
+__pycache__/
+*.pyc
+
+# Editors
+.vscode/
+
+# Simulation data and analysis output. Never committed.
+data/
+2024_simulation/
+All_atom_p53_interaction/
+CG_p53_random/
+*.fasta
+*.xlsx
+*.xtc
+*.dcd
+*.trr
+*.pdb
+*.gro
+*.h5
+seq.txt
+seq.fasta
+
+# Figures and tables produced by a run
+*.png
+*.svg
+*.csv

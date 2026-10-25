@@ -2,6 +2,8 @@ import contact_map_generation
 import interaction_plot
 import default_function
 import main
+import profiles
 import readpath
+import schema
 import showoff
 import normalization

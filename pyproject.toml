@@ -1,0 +1,22 @@
+[project]
+name = "interaction-map"
+version = "0.1.0"
+description = "Interaction maps for intrinsically disordered regions from all-atom and coarse-grained simulation"
+requires-python = ">=3.10"
+# Declared for reference. Installing from here will not work on Windows, because mdtraj
+# publishes no wheels for 1.9.x; use environment.yml.
+dependencies = [
+    "mdtraj==1.9.9",
+    "numpy==1.23.5",
+    "pandas==1.5.3",
+    "scipy==1.9.3",
+    "matplotlib==3.6.3",
+]
+
+[project.optional-dependencies]
+test = ["pytest==7.4.4"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+filterwarnings = ["ignore::DeprecationWarning"]
