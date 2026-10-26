@@ -181,16 +181,16 @@ def test_summary_reports_the_curve_and_its_range(fixture_fit):
     assert '1.2 nm' in text
 
 
-def test_summary_warns_when_the_curve_exceeds_one(fixture_fit):
-    assert 'WARNING' in cal.summarise(fixture_fit)
+def test_summary_reports_where_the_curve_exceeds_one(fixture_fit):
+    assert 'p_ref above 1' in cal.summarise(fixture_fit)
 
 
-def test_summary_is_quiet_when_the_curve_is_well_behaved():
+def test_summary_says_nothing_when_the_curve_stays_below_one():
     separations = np.arange(3, 40)
     fit = cal.fit_power_law(pd.Series(cal.power_law(separations, 0.5, -1.3), index=separations))
     fit.update({'cutoff': 0.8, 'scheme': 'ca', 'n_frames': 10, 'n_residues': 20,
                 'n_trajectories': 1, 'separation_min': 3, 'separation_max': 39})
-    assert 'WARNING' not in cal.summarise(fit)
+    assert 'p_ref above 1' not in cal.summarise(fit)
 
 
 def test_saved_fit_round_trips(fixture_fit, tmp_path):

@@ -13,11 +13,18 @@ def getcurrentpath():
     return pwd
 
 
-# Strip trailing whitespace from a sequence read off disk. The original did this one
-# character at a time with a regex; rstrip is the same operation, and does not raise on a
-# file that holds nothing but whitespace.
+# Strip trailing whitespace from a sequence read off disk. The original walked backwards
+# one character at a time with a regex; rstrip is the same operation and gives the same
+# answer for every input that is a sequence.
+#
+# On a file holding nothing but whitespace the original ran off the front of the string and
+# raised IndexError. Failing is still the right outcome there, so it still fails, with a
+# message that says what happened.
 def _clean(seq):
-    return seq.rstrip()
+    cleaned = seq.rstrip()
+    if not cleaned:
+        raise ValueError('the sequence file is empty')
+    return cleaned
 
 
 # Read the fasta file , clean the sequence, and measure the sequence length

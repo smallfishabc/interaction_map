@@ -144,3 +144,28 @@ def test_p53_topology_sequence_matches_seq_fasta(p53_sequence):
     sliced = traj.atom_slice(traj.top.select('protein'))
     assert cmg.topology_sequence(sliced) == p53_sequence
     assert cmg.check_sequence_against_topology(sliced, p53_sequence) is True
+
+
+# --------------------------------------------------------------- sequence reading
+
+def test_sequence_cleaning_matches_the_original_implementation():
+    """The original walked backwards with a regex; rstrip must give the same answer."""
+    import re
+    from interaction_map import readpath
+
+    def original(seq):
+        while re.search(r'\s', seq[-1]) is not None:
+            seq = seq[:-1]
+        return seq
+
+    for case in ['MEEPQ', 'MEEPQ\n', 'MEEPQ\r\n', 'MEEPQ  \n\n', '  MEEPQ\n', 'MEEPQ\tX\n']:
+        assert readpath._clean(case) == original(case), case
+
+
+def test_an_empty_sequence_file_still_fails():
+    """The original ran off the front of the string and raised IndexError. Failing is
+    still right; only the message changed."""
+    from interaction_map import readpath
+    for case in ['', '   ', '\n']:
+        with pytest.raises(ValueError):
+            readpath._clean(case)

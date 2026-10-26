@@ -178,11 +178,10 @@ def calibrate(topology, trajectories, cutoff=0.8, scheme='ca', all_pairs=False,
 
 def probability_ceiling(fit):
     """
-    The separation below which the fitted curve returns a value above 1.
+    The largest separation at which the fitted curve returns a value above 1.
 
-    A contact probability cannot exceed 1, so below this separation the curve is not
-    merely extrapolated but impossible, and any pair there will be scored as strongly
-    repulsive whatever it actually does.
+    Reported so the range can be seen, not acted on. What it means for a map is a question
+    about the method, not about this function.
 
     :return: the largest integer separation where p_ref > 1, or None if there is none
     """
@@ -214,8 +213,7 @@ def summarise(fit):
             fit['n_separations_dropped']))
     ceiling = probability_ceiling(fit)
     if ceiling:
-        lines.append('  WARNING             returns a value above 1 at separation {0} and '
-                     'below, where it cannot be a probability'.format(ceiling))
+        lines.append('  p_ref above 1       at separation {0} and below'.format(ceiling))
     worst = int(np.argmax(np.abs(fit['residuals'])))
     lines.append('  largest residual    {0:+.4g} at separation {1}'.format(
         fit['residuals'][worst], fit['separations'][worst]))
