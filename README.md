@@ -1,52 +1,65 @@
 # Interaction Map
 
-Author: Feng Yu
+Code for **"Interaction Map Enabled Intrinsically Disordered Protein Design by
+Understanding Intramolecular Interactions."**
 
-Interaction maps for intrinsically disordered regions. The method takes a simulation
-ensemble, measures how often each pair of residues is in contact, compares that against
-what a generic flexible chain of the same sequence separation would do, and draws the
-excess and the deficit as arcs along the sequence.
+Feng Yu, Shahar Sukenik
 
-Four operations, and everything here is scaffolding around them:
+---
 
-1. trajectory → Cα–Cα contact probability per residue pair, with sequence separation
-   `s = j − i`
-2. divide by a reference polymer curve `p_ref(s) = a·s^b` and take the log, giving the
-   interaction strength `I = ln(p_obs / p_ref)`
-3. bin that into five levels and draw a sequence track with arcs, attractive above,
-   repulsive below
-4. optionally condition the ensemble on one contact being formed and compare the two
-   sub-ensembles
+An intrinsically disordered region has no fixed structure, but it is not a random coil
+either. Pairs of residues touch more often, or less often, than a featureless chain of the
+same length would, and those preferences shape what the region does.
 
-## Profiles
+A raw contact map cannot show this. Long-range contacts have low absolute probability
+whatever their meaning, so a map of raw probabilities buries the interactions that matter.
+The Interaction Map divides that probability by what an interaction-free chain would give
+at the same sequence separation, which puts short-range and long-range contacts on one
+scale.
 
-All-atom and coarse-grained analyses use different calibrated constants. Both live in
-`profiles.py` and are selected with `--profile`; neither can be changed by editing the
-other.
+## The method
 
-| | `all_atom` | `cg` |
-|---|---|---|
-| simulation | CAMPARI / ABSINTH | CALVADOS |
-| contact cutoff | 0.8 nm | 1.2 nm |
-| pair selection | `compute_contacts(contacts='all', scheme='CA')`, drops \|i−j\| < 3 | `select_pairs('all','all')`, keeps every pair |
-| reference curve | 1.64·s^−1.33 | 13.12·s^−2.32 |
-| interaction cutoffs | (1.5, 0.5, −1, −2) | (2, 1, −1, −2) |
-| minimum separation drawn | 3 | 5 |
+For a pair of residues separated by `s = j - i` along the sequence:
 
-The coarse-grained reference falls off faster, which is why its exponent is steeper.
+**1. Contact probability.** The fraction of simulation frames in which the two residues
+are within a cutoff, measured Cα–Cα for all-atom.
 
-## Layout
+**2. Reference.** What a glycine–serine linker gives at the same separation, a power law
+fitted on GS linkers of 8 to 32 repeats:
 
 ```
-src/interaction_map/       the package
-src/interaction_map/util/  tools beside the analysis, not part of it
-scripts/main.py            run it without installing
-tests/                     the test suite, with a small coarse-grained fixture
-tutorials/                 worked notebooks
-eval/                      checks that the code still reproduces published output
+p_ref(s) = a * s ** b                                  Eq. 1
 ```
 
-## Installing
+**3. Interaction strength.** How far the pair departs from that reference:
+
+```
+I = ln( p_obs / p_ref )                                Eq. 2
+```
+
+Positive means the pair touches more than an interaction-free chain would — attraction,
+from opposite charges, hydrophobic contact or π–π stacking. Negative means less —
+repulsion, from like charges or from interactions drawn elsewhere in the sequence.
+
+**4. The map.** `I` is binned into five levels and drawn as arcs along the sequence:
+attractive above, repulsive below, residues coloured by type, arc thickness following the
+contact probability and the strength.
+
+Cutoffs are applied to both `I` and `p_obs` to suppress noise, and held constant across
+every map.
+
+## What is here
+
+| | |
+|---|---|
+| `src/interaction_map/` | the analysis |
+| `src/interaction_map/util/` | tools beside it, currently the reference-curve fit |
+| `scripts/main.py` | run without installing |
+| `tutorials/` | worked notebooks |
+| `tests/` | 213 tests, with a small coarse-grained example |
+| `eval/` | checks that the code still reproduces the published output |
+
+## Install
 
 ```
 conda env create -f environment.yml
@@ -54,136 +67,162 @@ conda activate interaction-map
 pip install -e . --no-deps
 ```
 
-`--no-deps` because mdtraj and the rest come from conda; mdtraj publishes no Windows
-wheels for 1.9.x, so pip cannot supply them. Installing gives you the `interaction-map`
-command. Skipping the install is fine too — `python scripts/main.py` takes the same
-arguments and puts `src/` on the path itself.
+mdtraj publishes no Windows wheels for 1.9.x, so this has to be a conda environment rather
+than a pip virtualenv, and `--no-deps` keeps pip from trying to supply them. On Windows the
+environment must be **activated**, not called by path, or the compiled extensions cannot
+find their DLLs.
 
-mdtraj publishes no Windows wheels for 1.9.x, so this has to be a conda environment
-rather than a pip virtualenv. **On Windows the environment must be activated**, not just
-invoked by path: running `<env>/python.exe` directly leaves the environment's
-`Library/bin` off the DLL search path, and the compiled extensions then fail to load,
-killing the interpreter with no traceback.
+Installing gives the `interaction-map` command. Without installing,
+`python scripts/main.py` takes the same arguments.
 
-## Running
+## Try it without any data
 
-Multi-repeat simulation database layout:
+One CALVADOS simulation of a p53 N-terminal double mutant ships with the repository:
+61 residues, 1000 frames, 805 KB.
 
 ```
-<name>-summary/
-  seq.fasta              protein sequence
-  BB/                    residue group whose transfer free energy is altered (--restype)
-    S_0/                 psi value of the transfer free energy (--psi)
-      __START_0.pdb      topology
-      __traj_0.xtc ...   one file per repeat
+interaction-map -p A39G_K24Y.pdb -x A39G_K24Y.dcd -dir tests/fixtures \
+                -name A39G_K24Y --profile cg --out out
 ```
 
-```
-python scripts/main.py -dir "path/to/<name>-summary" --profile all_atom
-```
+`TUTORIAL.md` walks through this end to end, including conditioning the ensemble on chosen
+interactions. Its numbers are pinned by the test suite, so the two cannot drift apart.
 
-A single topology and trajectory instead:
+## Running your own
 
-```
-python scripts/main.py --single_traj -dir "path/to/folder" -p protein.pdb -x protein.dcd -name protein --profile cg
-```
-
-Several trajectories of the same construct are treated as repeats, and the spread between
-them is reported as `p_sem`:
+All-atom, five repeats in the simulation database layout
+`<name>-summary/<restype>/S_<psi>/`:
 
 ```
-python scripts/main.py -p top.pdb -x run1.xtc run2.xtc run3.xtc -name protein
+interaction-map --database -dir path/to/p53-summary --psi 0 --restype BB --repeat 5
 ```
 
-Useful flags: `--psi`, `--restype`, `--repeat`, `--name`, `--out`, `--seq`, `--no_show`.
-
-## Conditional analysis
-
-Split the ensemble on whether one interaction is formed, and compare the two halves:
+A topology and one or more trajectories directly. Several trajectories of the same
+construct are treated as repeats, and the spread between them is reported:
 
 ```
-python scripts/main.py -p top.pdb -x traj.xtc -name protein --search 13 24
+interaction-map -p top.pdb -x run1.xtc run2.xtc run3.xtc -name protein
 ```
 
-A frame counts as containing the interaction when any residue pair in the 3x3 window
-around (13, 24) is within the contact cutoff. `--window N` changes the half width; `0`
-narrows it to the single pair. Writes `ensemble_13_24.csv` with Rg, end-to-end distance,
-helicity, beta content, hydrogen bonds and the frame count for each side, plus a contact
-table for each.
+Outputs land beside the trajectory unless `--out` says otherwise:
 
-Outputs land next to the trajectory: `<name>_<cutoff>_contact_df_1201.csv` with the
-contact probabilities, `interaction_0317.csv` with the interaction strengths and levels,
-and `<name>.png` / `.svg`.
-
-Folders used for previous figures are listed in `RUN_PATHS.md`.
-
-## Residue numbering
-
-`r_1` and `r_2` in every output are **1-based sequence positions**. The two profiles get
-there differently, and the difference matters:
-
-- All-atom CAMPARI topologies carry an ACE cap at residue index 0 and an NME cap at the
-  end. `ignore_nonprotein=True` drops the caps from the pair list but not from the
-  numbering, so the first real residue is already index 1 and no shift is applied.
-- CALVADOS topologies have no caps, so one is added.
-
-An **uncapped all-atom topology would therefore come out one residue low**, with every arc
-drawn against the wrong residue and no error raised.
-`contact_map_generation.check_residue_numbering` warns when the numbering does not span
-`1..len(sequence)`, and `check_sequence_against_topology` warns when the sequence file
-does not match the topology. Both are diagnostic and alter nothing.
-
-## Modules
-
-| `src/interaction_map/` | Contents |
+| File | Contents |
 |---|---|
-| `cli.py` | command line entry point |
-| `default_function.py` | the pipeline: contacts → normalization → figure |
-| `profiles.py` | the two sets of calibrated constants |
-| `contact_map_generation.py` | trajectory loading, contact probabilities, numbering guards |
-| `normalization.py` | reference curve and the interaction levels |
-| `interaction_plot.py` | the sequence track and the arcs |
-| `schema.py` | shape checks for the tables passed between stages |
-| `search_chunk.py` | conditional analysis: split the ensemble on one interaction |
-| `readpath.py` | sequence files |
+| `<name>_<cutoff>_contact_df_1201.csv` | contact probability per pair, with residue identity and the spread across repeats |
+| `interaction_0317.csv` | the above plus the reference, the interaction strength and the level |
+| `<name>.png`, `.svg` | the map |
 
-## Tests
+`r_1` and `r_2` are 1-based sequence positions.
+
+## Conditioning on an interaction
+
+Resolving an ensemble into subpopulations by which contacts are formed. Split the frames
+on one interaction and compare the halves:
 
 ```
-pytest
+interaction-map -p top.pdb -x traj.xtc -name protein --search 13 24
 ```
 
-153 tests. Most run on synthetic data; those comparing against the real p53 output or a
-CALVADOS mutant skip when the data folders are absent.
+A frame counts when any pair in the 3×3 window around (13, 24) is within the cutoff.
+`--window` changes the half width. Several interactions can be combined:
 
-The suite pins the calibrated constants, the bin edges, the arc geometry and line widths,
-and — when the reference data is present — that the rendered figure is **pixel identical**
-to the published `p53.png`. If one of these fails, a published number has moved.
+```
+interaction-map -p top.pdb -x traj.xtc -name protein --search 13 24 37 44 --combine all
+```
 
-## Known behaviour
+`any` selects frames where at least one is formed, `all` where every one is formed
+together. The output records Rg, end-to-end distance, helicity, β content, hydrogen bonds,
+and **the frame count on each side** — a split where one side holds a handful of frames
+means something different from an even one.
 
-The coarse-grained reference curve returns values above 1 below separation 4 (13.12 at
-s=1, 2.63 at s=2, 1.03 at s=3). Bonded neighbours are inside the 1.2 nm cutoff in every
-frame, so they come out as strongly repulsive. `min_sep = 5` keeps them out of the figure,
-but they remain in the interaction CSV. The count is exactly *N−1* for a chain of length
-*N*, so it cancels when comparing equal-length sequences and does not cancel across
-different lengths.
+## Two force fields
 
-## Calibrating the reference curve
+The paper uses all-atom simulation for the maps and coarse-grained simulation to screen
+mutant ensembles, because CALVADOS contact probability falls off about an order of
+magnitude faster than CAMPARI and so loses sensitivity to mid- and long-range pairs
+(Fig. 8A). Both are supported through `--profile`, and their constants are declared
+together in `profiles.py` so that neither can be altered by editing the other:
 
-The curve the map measures against, p_ref(s) = a*s^b, is fitted on reference linkers:
+| | `all_atom` | `cg` |
+|---|---|---|
+| force field | ABSINTH / CAMPARI v2_09052017 | CALVADOS2 (2023) |
+| contact cutoff | 0.8 nm | 1.2 nm |
+| distance measured | Cα–Cα | between beads |
+| reference `a`, `b` | 1.64, −1.33 | 13.12, −2.32 |
+| interaction cutoffs | (1.5, 0.5, −1, −2) | (2, 1, −1, −2) |
+| minimum separation drawn | 3 | 5 |
 
+### Fitting the reference curve
 
+`util/calibrate.py` performs the GS linker fit of Eq. 1:
 
-It reports the fit, its standard errors, R squared, the separation range it covers, and a
-warning if the curve returns a value above 1 at short separation, which no probability can
-be.  walks through it.
+```
+python -m interaction_map.util.calibrate GS16/__START_0.pdb GS16/__traj_*.xtc \
+    --cutoff 0.8 --sep 3 60 --out references/gs16.json
+```
 
-The constants currently in  do not trace to a recorded fit. See the closing
-note in that notebook.
+It records the cutoff, the scheme, the separation range, the trajectories, the standard
+errors and the residuals alongside `a` and `b`. A curve fitted at one cutoff does not
+describe another, and beyond its fitted range it is an extrapolation.
+
+The constants in the table above were inherited from earlier work and do not trace to a
+fit recorded in this repository. `tutorials/calibration.ipynb` shows what re-deriving them
+involves, and what the GS16 notebooks give on their own.
+
+## Simulation settings
+
+From the paper's Methods, for reference when preparing input.
+
+**All-atom** — ABSINTH implicit solvent, CAMPARI v2_09052017, 310 K, 10⁷ equilibration
+steps, conformations written every 12,500 steps. Five independent simulations of ~5,600
+conformations each per protein per condition, ~28,000 in total. PUMA scrambles used three
+repeats, ~16,800 conformations.
+
+**Coarse-grained** — CALVADOS2 (2023), 310 K, 1,000 frames per trajectory.
+
+## Verification
+
+This code was reorganised from several older branches. Three checks confirm the published
+output is still reproduced, each run against the original code rather than against a
+description of it:
+
+| Check | Against |
+|---|---|
+| `eval/regress.py` | the August 2023 p53 output; the rendered figure matches `p53.png` pixel for pixel |
+| `eval/cg_faithful.py` | the `0519_CG` branch, taken from git and run side by side |
+| `eval/cond_faithful.py` | the `1115_new_start` branch, likewise |
+
+They need the simulation data, so they are not part of `pytest`. `eval/README.md` explains
+what each establishes.
+
+## Not yet in this package
+
+Analyses described in the paper that currently live in notebooks outside the repository:
+
+- PCA clustering of conformations by interaction pattern (Fig. 3D, E)
+- Mutation scanning with the 3-residue sliding window of Eq. 3 (Fig. 5, 6)
+- Hydrophobic scaling per interaction chunk (Fig. 5C/D, 6C/D)
+- Solution-sensitivity regression against attractive interaction count (Fig. 4D, E)
+
+## ColabMap
+
+A Colab notebook combining CALVADOS simulation with the Interaction Map, for use without a
+local installation: give it an IDR sequence and the residue types to mutate, and it returns
+Interaction Maps and a list of mutants as CSV.
+
+*Link to be added.*
 
 ## Further reading
 
-- `SUMMARY.md` — every change on this branch against the branches it was combined from
-- `CHANGES_AND_TESTS.md` — verification status and what still needs testing
-- `RUN_PATHS.md` — data folders used by previous runs
+- `TUTORIAL.md` — a complete run on the bundled example
+- `tutorials/calibration.ipynb` — fitting the reference curve
+- `RUN_PATHS.md` — the simulation folders behind the published figures
+- `SUMMARY.md`, `CHANGES_AND_TESTS.md` — what changed in the reorganisation, and how it was checked
+
+## Citing
+
+Please cite the paper. A `CITATION.cff` will be added on publication.
+
+## License
+
+To be added.
