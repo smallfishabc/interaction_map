@@ -38,3 +38,5 @@ seq.fasta
 
 # Reference notebooks copied in for porting; not part of the package
 temp_examples/
+tutorials/reference_fixture.json
+tutorials/.ipynb_checkpoints/

@@ -38,10 +38,12 @@ The coarse-grained reference falls off faster, which is why its exponent is stee
 ## Layout
 
 ```
-src/interaction_map/   the package
-scripts/main.py        run it without installing
-tests/                 the test suite, with a small coarse-grained fixture
-eval/                  checks that the code still reproduces published output
+src/interaction_map/       the package
+src/interaction_map/util/  tools beside the analysis, not part of it
+scripts/main.py            run it without installing
+tests/                     the test suite, with a small coarse-grained fixture
+tutorials/                 worked notebooks
+eval/                      checks that the code still reproduces published output
 ```
 
 ## Installing
@@ -166,6 +168,19 @@ frame, so they come out as strongly repulsive. `min_sep = 5` keeps them out of t
 but they remain in the interaction CSV. The count is exactly *N−1* for a chain of length
 *N*, so it cancels when comparing equal-length sequences and does not cancel across
 different lengths.
+
+## Calibrating the reference curve
+
+The curve the map measures against, p_ref(s) = a*s^b, is fitted on reference linkers:
+
+
+
+It reports the fit, its standard errors, R squared, the separation range it covers, and a
+warning if the curve returns a value above 1 at short separation, which no probability can
+be.  walks through it.
+
+The constants currently in  do not trace to a recorded fit. See the closing
+note in that notebook.
 
 ## Further reading
 
