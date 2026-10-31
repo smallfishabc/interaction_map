@@ -225,4 +225,4 @@ Please cite the paper. A `CITATION.cff` will be added on publication.
 
 ## License
 
-To be added.
+MIT. See `LICENSE`.

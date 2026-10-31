@@ -8,6 +8,28 @@ version = "0.1.0"
 description = "Interaction maps for intrinsically disordered regions from all-atom and coarse-grained simulation"
 readme = "README.md"
 requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+    { name = "Feng Yu" },
+    { name = "Shahar Sukenik" },
+]
+keywords = [
+    "intrinsically disordered proteins",
+    "IDR",
+    "molecular dynamics",
+    "contact map",
+    "protein design",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Scientific/Engineering :: Chemistry",
+]
+
 # Declared for reference. Installing from here will not work on Windows, because mdtraj
 # publishes no wheels for 1.9.x; create the environment from environment.yml first and
 # then `pip install -e . --no-deps`.
@@ -18,6 +40,10 @@ dependencies = [
     "scipy==1.9.3",
     "matplotlib==3.6.3",
 ]
+
+[project.urls]
+Repository = "https://github.com/smallfishabc/interaction_map"
+Issues = "https://github.com/smallfishabc/interaction_map/issues"
 
 [project.optional-dependencies]
 test = ["pytest==7.4.4"]
