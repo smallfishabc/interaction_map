@@ -1,6 +1,7 @@
 # TODO
 
 Blocks releasing alongside the paper. Nothing here blocks using the code.
+Everything else is in `TODO_2.md`.
 
 - [ ] **Merge to `master`.** This work is all on `refactor_20261024`; `master` is still the
       2021 code.
