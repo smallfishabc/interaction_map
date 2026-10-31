@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from interaction_map.util import mutation_scan as ms
+from ensemble_map.util import mutation_scan as ms
 
 from conftest import requires_p53
 

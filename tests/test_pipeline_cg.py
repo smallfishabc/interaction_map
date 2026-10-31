@@ -11,13 +11,13 @@ import os
 import numpy as np
 import pytest
 
-from interaction_map import contact_map_generation as cmg
-from interaction_map import interaction_plot as ip
-from interaction_map import normalization as nl
-from interaction_map import profiles
-from interaction_map import readpath
-from interaction_map import schema
-from interaction_map import search_chunk as sc
+from ensemble_map import contact_map_generation as cmg
+from ensemble_map import interaction_plot as ip
+from ensemble_map import normalization as nl
+from ensemble_map import profiles
+from ensemble_map import readpath
+from ensemble_map import schema
+from ensemble_map import search_chunk as sc
 
 FIXTURES = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'fixtures')
 NAME = 'A39G_K24Y'

@@ -9,8 +9,8 @@ the figure -- the interaction level and the pair identity -- must match exactly.
 import numpy as np
 import pytest
 
-from interaction_map import normalization as nl
-from interaction_map import profiles
+from ensemble_map import normalization as nl
+from ensemble_map import profiles
 
 from conftest import requires_p53
 

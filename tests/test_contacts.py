@@ -5,8 +5,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from interaction_map import contact_map_generation as cmg
-from interaction_map import profiles
+from ensemble_map import contact_map_generation as cmg
+from ensemble_map import profiles
 
 from conftest import requires_p53, synthetic_trajectory
 

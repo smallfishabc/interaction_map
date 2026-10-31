@@ -6,8 +6,8 @@ residue pairs it looks at and how the numbering is translated.
 import numpy as np
 import pytest
 
-from interaction_map import profiles
-from interaction_map import search_chunk as sc
+from ensemble_map import profiles
+from ensemble_map import search_chunk as sc
 
 from conftest import synthetic_trajectory
 

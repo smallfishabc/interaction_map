@@ -21,11 +21,11 @@ suite will say so too.
 
 ```
 conda env create -f environment.yml
-conda activate interaction-map
+conda activate ensemble-map
 ```
 
 Every command below uses `python scripts/main.py`, which works straight from a checkout.
-After `pip install -e . --no-deps` the command `interaction-map` takes exactly the same
+After `pip install -e . --no-deps` the command `ensemble-map` takes exactly the same
 arguments.
 
 On Windows the environment has to be **activated**, not just called by path, or the

@@ -3,9 +3,9 @@ requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "interaction-map"
+name = "ensemble-map"
 version = "0.1.0"
-description = "Interaction maps for intrinsically disordered regions from all-atom and coarse-grained simulation"
+description = "Ensemble maps for intrinsically disordered regions from all-atom and coarse-grained simulation"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
@@ -42,14 +42,14 @@ dependencies = [
 ]
 
 [project.urls]
-Repository = "https://github.com/smallfishabc/interaction_map"
-Issues = "https://github.com/smallfishabc/interaction_map/issues"
+Repository = "https://github.com/smallfishabc/EnsembleMap"
+Issues = "https://github.com/smallfishabc/EnsembleMap/issues"
 
 [project.optional-dependencies]
 test = ["pytest==7.4.4"]
 
 [project.scripts]
-interaction-map = "interaction_map.cli:main"
+ensemble-map = "ensemble_map.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

@@ -1,6 +1,6 @@
-# Interaction Map
+# Ensemble Map
 
-Code for **"Interaction Map Enabled Intrinsically Disordered Protein Design by
+Code for **"Ensemble Map Enabled Intrinsically Disordered Protein Design by
 Understanding Intramolecular Interactions."**
 
 Feng Yu, Shahar Sukenik
@@ -13,7 +13,7 @@ same length would, and those preferences shape what the region does.
 
 A raw contact map cannot show this. Long-range contacts have low absolute probability
 whatever their meaning, so a map of raw probabilities buries the interactions that matter.
-The Interaction Map divides that probability by what an interaction-free chain would give
+The Ensemble Map divides that probability by what an interaction-free chain would give
 at the same sequence separation, which puts short-range and long-range contacts on one
 scale.
 
@@ -52,8 +52,8 @@ every map.
 
 | | |
 |---|---|
-| `src/interaction_map/` | the analysis |
-| `src/interaction_map/util/` | tools beside it, currently the reference-curve fit |
+| `src/ensemble_map/` | the analysis |
+| `src/ensemble_map/util/` | tools beside it, currently the reference-curve fit |
 | `scripts/main.py` | run without installing |
 | `tutorials/` | worked notebooks |
 | `tests/` | 213 tests, with a small coarse-grained example |
@@ -63,7 +63,7 @@ every map.
 
 ```
 conda env create -f environment.yml
-conda activate interaction-map
+conda activate ensemble-map
 pip install -e . --no-deps
 ```
 
@@ -72,7 +72,7 @@ than a pip virtualenv, and `--no-deps` keeps pip from trying to supply them. On 
 environment must be **activated**, not called by path, or the compiled extensions cannot
 find their DLLs.
 
-Installing gives the `interaction-map` command. Without installing,
+Installing gives the `ensemble-map` command. Without installing,
 `python scripts/main.py` takes the same arguments.
 
 ## Try it without any data
@@ -81,7 +81,7 @@ One CALVADOS simulation of a p53 N-terminal double mutant ships with the reposit
 61 residues, 1000 frames, 805 KB.
 
 ```
-interaction-map -p A39G_K24Y.pdb -x A39G_K24Y.dcd -dir tests/fixtures \
+ensemble-map -p A39G_K24Y.pdb -x A39G_K24Y.dcd -dir tests/fixtures \
                 -name A39G_K24Y --profile cg --out out
 ```
 
@@ -94,14 +94,14 @@ All-atom, five repeats in the simulation database layout
 `<name>-summary/<restype>/S_<psi>/`:
 
 ```
-interaction-map --database -dir path/to/p53-summary --psi 0 --restype BB --repeat 5
+ensemble-map --database -dir path/to/p53-summary --psi 0 --restype BB --repeat 5
 ```
 
 A topology and one or more trajectories directly. Several trajectories of the same
 construct are treated as repeats, and the spread between them is reported:
 
 ```
-interaction-map -p top.pdb -x run1.xtc run2.xtc run3.xtc -name protein
+ensemble-map -p top.pdb -x run1.xtc run2.xtc run3.xtc -name protein
 ```
 
 Outputs land beside the trajectory unless `--out` says otherwise:
@@ -120,14 +120,14 @@ Resolving an ensemble into subpopulations by which contacts are formed. Split th
 on one interaction and compare the halves:
 
 ```
-interaction-map -p top.pdb -x traj.xtc -name protein --search 13 24
+ensemble-map -p top.pdb -x traj.xtc -name protein --search 13 24
 ```
 
 A frame counts when any pair in the 3×3 window around (13, 24) is within the cutoff.
 `--window` changes the half width. Several interactions can be combined:
 
 ```
-interaction-map -p top.pdb -x traj.xtc -name protein --search 13 24 37 44 --combine all
+ensemble-map -p top.pdb -x traj.xtc -name protein --search 13 24 37 44 --combine all
 ```
 
 `any` selects frames where at least one is formed, `all` where every one is formed
@@ -157,7 +157,7 @@ together in `profiles.py` so that neither can be altered by editing the other:
 `util/calibrate.py` performs the GS linker fit of Eq. 1:
 
 ```
-python -m interaction_map.util.calibrate GS16/__START_0.pdb GS16/__traj_*.xtc \
+python -m ensemble_map.util.calibrate GS16/__START_0.pdb GS16/__traj_*.xtc \
     --cutoff 0.8 --sep 3 60 --out references/gs16.json
 ```
 
@@ -206,7 +206,7 @@ Analyses described in the paper that currently live in notebooks outside the rep
 
 ## ColabMap
 
-A Colab notebook combining CALVADOS simulation with the Interaction Map, for use without a
+A Colab notebook combining CALVADOS simulation with the Ensemble Map, for use without a
 local installation: give it an IDR sequence and the residue types to mutate, and it returns
 Interaction Maps and a list of mutants as CSV.
 

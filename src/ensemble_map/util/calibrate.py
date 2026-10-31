@@ -20,8 +20,8 @@ it is meant to measure would be worth nothing.
 
 Run it when you have reference trajectories:
 
-    python -m interaction_map.util.calibrate GS16.pdb GS16.dcd --cutoff 1.2 --all-pairs
-    python -m interaction_map.util.calibrate __START_0.pdb __traj_*.xtc --out gs.json
+    python -m ensemble_map.util.calibrate GS16.pdb GS16.dcd --cutoff 1.2 --all-pairs
+    python -m ensemble_map.util.calibrate __START_0.pdb __traj_*.xtc --out gs.json
 
 @author: ShaharGroup-fyu
 """
@@ -240,7 +240,7 @@ def load(path):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(
-        prog='interaction_map.util.calibrate',
+        prog='ensemble_map.util.calibrate',
         description='Fit the reference contact probability curve on reference '
                     'trajectories, usually glycine-serine linkers.')
     parser.add_argument('topology', help='topology file')

@@ -37,8 +37,8 @@ matplotlib.use('Agg')
 import numpy as np
 import pandas as pd
 
-from interaction_map import profiles
-from interaction_map import normalization as nl
+from ensemble_map import profiles
+from ensemble_map import normalization as nl
 
 FAIL = []
 FULL = '--full' in sys.argv
@@ -82,7 +82,7 @@ print('reference: {0} pairs, sequence {1} residues'.format(len(REF), len(SEQ)))
 
 # ------------------------------------------------------------------ numbering
 section('residue numbering')
-from interaction_map import contact_map_generation as cg
+from ensemble_map import contact_map_generation as cg
 
 check('r_1 min is 1', int(REF['r_1'].min()) == 1, int(REF['r_1'].min()))
 check('r_2 max is len(seq)', int(REF['r_2'].max()) == len(SEQ),
@@ -130,7 +130,7 @@ check('contact cutoff is 0.8', aa.cutoff == 0.8, aa.cutoff)
 
 # ------------------------------------------------------------------ arc selection
 section('arc selection and line widths')
-from interaction_map import interaction_plot as ip
+from ensemble_map import interaction_plot as ip
 
 graphg = ip.create_network(SEQ, len(SEQ))
 pos, layout = ip.create_position(graphg)

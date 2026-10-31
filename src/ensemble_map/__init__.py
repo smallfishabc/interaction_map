@@ -11,11 +11,11 @@ the figure -- is numpy, pandas and matplotlib.
 So the modules that need mdtraj are imported on demand rather than when the package is
 imported. Starting from a stored contact table, this works with no mdtraj installed:
 
-    from interaction_map import normalization, interaction_plot
+    from ensemble_map import normalization, interaction_plot
 
 while these pull mdtraj in at the moment they are first used:
 
-    from interaction_map import contact_map_generation, search_chunk, default_function
+    from ensemble_map import contact_map_generation, search_chunk, default_function
 """
 
 import importlib

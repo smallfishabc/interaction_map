@@ -1,7 +1,7 @@
-# Analysis environment for the Interaction Map.
+# Analysis environment for the Ensemble Map.
 #
 #   conda env create -f environment.yml
-#   conda activate interaction-map
+#   conda activate ensemble-map
 #   pytest
 #
 # Windows note: the environment must be activated, not just invoked by path. Calling
@@ -16,7 +16,7 @@
 #   setuptools  must stay below 81. mdtraj 1.9.x imports pkg_resources, which newer
 #               setuptools no longer ships.
 #   networkx    no longer required. The sequence track is drawn directly with matplotlib.
-name: interaction-map
+name: ensemble-map
 channels:
   - conda-forge
 dependencies:

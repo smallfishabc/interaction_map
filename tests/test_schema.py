@@ -3,9 +3,9 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from interaction_map import contact_map_generation as cmg
-from interaction_map import normalization as nl
-from interaction_map import schema
+from ensemble_map import contact_map_generation as cmg
+from ensemble_map import normalization as nl
+from ensemble_map import schema
 
 from conftest import requires_p53, synthetic_trajectory
 
@@ -151,7 +151,7 @@ def test_p53_topology_sequence_matches_seq_fasta(p53_sequence):
 def test_sequence_cleaning_matches_the_original_implementation():
     """The original walked backwards with a regex; rstrip must give the same answer."""
     import re
-    from interaction_map import readpath
+    from ensemble_map import readpath
 
     def original(seq):
         while re.search(r'\s', seq[-1]) is not None:
@@ -165,7 +165,7 @@ def test_sequence_cleaning_matches_the_original_implementation():
 def test_an_empty_sequence_file_still_fails():
     """The original ran off the front of the string and raised IndexError. Failing is
     still right; only the message changed."""
-    from interaction_map import readpath
+    from ensemble_map import readpath
     for case in ['', '   ', '\n']:
         with pytest.raises(ValueError):
             readpath._clean(case)

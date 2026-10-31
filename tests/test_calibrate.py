@@ -10,7 +10,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from interaction_map.util import calibrate as cal
+from ensemble_map.util import calibrate as cal
 
 FIXTURES = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'fixtures')
 PDB = os.path.join(FIXTURES, 'A39G_K24Y.pdb')

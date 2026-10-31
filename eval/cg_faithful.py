@@ -95,10 +95,10 @@ subprocess.check_call([sys.executable, 'run_legacy.py'], cwd=legacy_dir,
                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 print('running the combined code...')
-from interaction_map import profiles
-from interaction_map import contact_map_generation as cg
-from interaction_map import normalization as nl
-from interaction_map import interaction_plot as ip
+from ensemble_map import profiles
+from ensemble_map import contact_map_generation as cg
+from ensemble_map import normalization as nl
+from ensemble_map import interaction_plot as ip
 
 seq = read_fasta(os.path.join(new_dir, NAME + '.fasta'))
 prof = profiles.get_profile('cg')

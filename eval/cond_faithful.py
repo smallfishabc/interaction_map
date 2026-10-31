@@ -124,8 +124,8 @@ if result.returncode != 0:
     sys.exit('legacy run failed')
 
 print('running the combined code...')
-from interaction_map import default_function
-from interaction_map import profiles
+from ensemble_map import default_function
+from ensemble_map import profiles
 
 with open(os.path.join(new_dir, 'seq.fasta')) as handle:
     seq = handle.read().strip()

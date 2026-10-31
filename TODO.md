@@ -5,9 +5,6 @@ Blocks releasing alongside the paper. Nothing here blocks using the code.
 - [ ] **Merge to `master`.** This work is all on `refactor_20261024`; `master` is still the
       2021 code.
 
-- [ ] **Rename the repository** to `interaction_map` in GitHub settings, then locally:
-      `git remote set-url origin https://github.com/smallfishabc/interaction_map.git`
-
 - [ ] **`CITATION.cff`** at the root, with the paper's authors, title and DOI. GitHub turns
       it into a "Cite this repository" button.
 

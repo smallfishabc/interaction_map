@@ -40,3 +40,6 @@ seq.fasta
 temp_examples/
 tutorials/reference_fixture.json
 tutorials/.ipynb_checkpoints/
+*.egg-info/
+build/
+dist/
