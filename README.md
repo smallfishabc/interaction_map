@@ -226,3 +226,5 @@ Please cite the paper. A `CITATION.cff` will be added on publication.
 ## License
 
 MIT. See `LICENSE`.
+
+Work still outstanding before release is listed in `TODO.md`.
