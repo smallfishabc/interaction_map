@@ -43,3 +43,10 @@ tutorials/.ipynb_checkpoints/
 *.egg-info/
 build/
 dist/
+
+# Sphinx scaffolding from 2022, never filled in; README and TUTORIAL do this job
+docs/
+
+# Reference notebooks kept locally, not part of the package
+Google Colab/IDRLab.ipynb
+Google Colab/Interaction_map_auto_scan_2025.ipynb

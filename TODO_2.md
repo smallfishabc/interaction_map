@@ -16,11 +16,6 @@ urgent.
       product is the Ensemble Map, the thing it draws is an interaction — but it is worth
       being deliberate about rather than inheriting.
 
-## Finish the rename
-
-- [ ] `git remote set-url origin https://github.com/smallfishabc/EnsembleMap.git`
-      Pushes currently work through GitHub's redirect from the old name.
-
 ## Colab and Binder
 
 - [ ] **Run `Google Colab/EnsembleMap_2026.ipynb` end to end on a GPU.** Only its analysis
@@ -34,9 +29,6 @@ urgent.
 - [ ] Update the notebook's install line once the branch is merged. It currently installs
       from `@refactor_20261024`; it should install from a tag.
 
-- [ ] Decide whether `IDRLab.ipynb` and `Interaction_map_auto_scan_2025.ipynb` are
-      committed as references or left out. Both are untracked. The 2026 notebook is built
-      from IDRLab's engine, so keeping it makes the provenance checkable.
 
 - [ ] **Binder**, if it is wanted for reproducing the analysis without a GPU: add
       `jupyterlab` and `ipykernel` to `environment.yml`, add a `postBuild` file containing
